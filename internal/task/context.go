@@ -10,8 +10,9 @@ type Context struct {
 }
 
 type globalContext struct {
-	memoTables map[string]interface{}
-	Stats      GlobalStats
+	// Mapping from ID to typed memo table
+	memoTables []interface{}
+	stats      GlobalStats
 }
 
 type GlobalStats struct {
@@ -19,7 +20,7 @@ type GlobalStats struct {
 }
 
 func GetGlobalStats(c *Context) *GlobalStats {
-	return &c.global.Stats
+	return &c.global.stats
 }
 
 func (g *GlobalStats) String() string {
@@ -30,21 +31,26 @@ func Root() *Context {
 	return &Context{
 		name: "",
 		global: &globalContext{
-			memoTables: make(map[string]interface{}),
+			memoTables: make([]interface{}, getMaxID()+1),
 		},
 	}
 }
 
-func getTypedMemo[Arg comparable, Result any](g *globalContext, name string) map[Arg]Result {
-	if memo, ok := g.memoTables[name]; ok {
+func getTypedMemo[Arg comparable, Result any](g *globalContext, id int) map[Arg]Result {
+	if id >= len(g.memoTables) {
+		newTable := make([]interface{}, id+1)
+		copy(newTable, g.memoTables)
+		g.memoTables = newTable
+	}
+	if memo := g.memoTables[id]; memo != nil {
 		if typedMemo, ok := memo.(map[Arg]Result); ok {
 			return typedMemo
 		} else {
-			panic(fmt.Errorf("Name %s reused by multiple tasks with different types", name))
+			panic(fmt.Errorf("ID %d reused by multiple tasks with different types, %T, %T", id, typedMemo, memo))
 		}
 	} else {
 		typedMemo := make(map[Arg]Result)
-		g.memoTables[name] = typedMemo
+		g.memoTables[id] = typedMemo
 		return typedMemo
 	}
 }
