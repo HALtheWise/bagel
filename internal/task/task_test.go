@@ -9,28 +9,28 @@ import (
 var callCount = 0
 
 var greetT = task.Task1("greet", func(ctx *task.Context, s string) string {
-	return "Hello " + embiggenT(ctx, s)
+	return "Hello " + embiggenT(ctx, s, 2)
 })
 
-func _embiggen(ctx *task.Context, s string) string {
+func _embiggen(ctx *task.Context, s string, levels int) string {
 	callCount += 1
-	if len(s) >= 4 {
+	if levels == 0 {
 		return s
 	}
-	return embiggenT(ctx, s+s)
+	return embiggenT(ctx, s, levels-1) + embiggenT(ctx, s, levels-1)
 }
 
-var embiggenT func(*task.Context, string) string
+var embiggenT func(*task.Context, string, int) string
 
 func init() {
 	// Needed to break initialization cycle
-	embiggenT = task.Task1("embiggen", _embiggen)
+	embiggenT = task.Task2("embiggen", _embiggen)
 }
 
 func TestGreet(t *testing.T) {
 	ctx := task.Root()
-	want := "aaaa"
-	if got := embiggenT(ctx, "a"); got != want {
+	want := "aaaaaaaa"
+	if got := embiggenT(ctx, "a", 3); got != want {
 		t.Errorf("got %s, wanted %s", got, want)
 	}
 
