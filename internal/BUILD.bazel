@@ -5,7 +5,10 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/HALtheWise/balez/internal",
     visibility = ["//visibility:private"],
-    deps = ["//internal/task"],
+    deps = [
+        "//internal/task",
+        "@net_starlark_go//starlark",
+    ],
 )
 
 go_binary(
