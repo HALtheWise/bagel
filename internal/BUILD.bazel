@@ -5,6 +5,7 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/HALtheWise/balez/internal",
     visibility = ["//visibility:private"],
+    deps = ["//internal/task"],
 )
 
 go_binary(

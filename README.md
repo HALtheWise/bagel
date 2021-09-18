@@ -17,3 +17,7 @@ Instead of an explicit graph representation, just stick with memoized function c
 
 - Start without incremental builds (but with diamond deduplication)
 - Start without a bunch of other stuff, I guess?
+
+### Setup
+
+https://github.com/golang/tools/blob/master/gopls/doc/advanced.md#working-with-generic-code
