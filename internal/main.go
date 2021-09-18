@@ -2,6 +2,10 @@ package main
 
 import "fmt"
 
+func echo[T any](x T) T {
+	return x
+}
+
 func main() {
-	fmt.Println("Hello World")
+	fmt.Println(echo("Hello World"))
 }

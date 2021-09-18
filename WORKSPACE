@@ -10,11 +10,17 @@ http_archive(
     ],
 )
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+load("@io_bazel_rules_go//go:deps.bzl", "go_local_sdk", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.17")
+# TODO(eric): Package this into a .tar and check it in
+go_local_sdk(
+    name = "go_sdk",
+    path = "/home/eric/git/goroot",
+)
+
+go_register_toolchains()
 
 # Gazelle
 

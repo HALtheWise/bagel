@@ -11,6 +11,8 @@
 /bazel-*
 
 ### Go ###
+.gopath/
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
