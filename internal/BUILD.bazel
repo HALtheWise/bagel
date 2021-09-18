@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "internal_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/HALtheWise/balez/internal",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "internal",
+    embed = [":internal_lib"],
+    visibility = ["//:__subpackages__"],
+)
