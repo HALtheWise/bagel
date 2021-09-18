@@ -4,7 +4,7 @@ go_library(
     name = "task",
     srcs = [
         "context.go",
-        "task1.go",
+        "task.go",
     ],
     importpath = "github.com/HALtheWise/balez/internal/task",
     visibility = ["//:__subpackages__"],
