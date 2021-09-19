@@ -1,12 +1,11 @@
 package starlark_tasks
 
 import (
-	"fmt"
-
 	"github.com/HALtheWise/balez/internal/labels"
 	"go.starlark.net/starlark"
 )
 
+// https://docs.bazel.build/versions/main/skylark/lib/Label.html
 type BzlLabel struct {
 	label  labels.Label
 	frozen bool
@@ -25,7 +24,7 @@ func (l *BzlLabel) Attr(name string) (starlark.Value, error) {
 	case "workspace_name":
 		return starlark.String(l.label.Repo), nil
 	}
-	return starlark.None, fmt.Errorf("Unimplemented label.%s", name)
+	return nil, nil
 }
 
 func (l *BzlLabel) String() string        { return l.label.String() }
@@ -48,7 +47,7 @@ func (c *BzlCtx) Attr(name string) (starlark.Value, error) {
 	case "label":
 		return &c.label, nil
 	}
-	return starlark.None, fmt.Errorf("Unimplemened ctx.%s", name)
+	return nil, nil
 }
 
 func (c *BzlCtx) String() string        { return "ctx for " + c.label.String() }

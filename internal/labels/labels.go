@@ -56,6 +56,14 @@ func ParsePackage(s string) Package {
 	return Package{Repo: "", Pkg: s[2:]}
 }
 
+func ParseRelativeLabel(s string, from Package) Label {
+	if strings.Contains(s, ":") && !strings.HasPrefix(s, ":") {
+		// This is an absolute label
+		return ParseLabel(s)
+	}
+	return Label{Package: from, Name: strings.TrimPrefix(s, ":")}
+}
+
 func ParseLabel(s string) Label {
 	parts := strings.SplitN(s, ":", 2)
 	if len(parts) != 2 {

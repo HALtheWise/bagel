@@ -1,9 +1,4 @@
-def _foo_binary_impl(ctx):
-    print("analyzing", ctx.label)
-
-foo_binary = rule(
-    implementation = _foo_binary_impl,
-)
+load(":foo.bzl", "foo_binary")
 
 print("BUILD file")
 
