@@ -6,8 +6,10 @@ go_library(
     importpath = "github.com/HALtheWise/balez/internal",
     visibility = ["//visibility:private"],
     deps = [
+        "//internal/labels",
         "//internal/starlark_tasks",
         "//internal/task",
+        "@com_github_jessevdk_go_flags//:go_default_library",
     ],
 )
 

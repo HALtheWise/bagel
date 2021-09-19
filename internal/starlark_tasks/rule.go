@@ -3,25 +3,18 @@ package starlark_tasks
 import (
 	"fmt"
 
+	"github.com/HALtheWise/balez/internal/labels"
 	"go.starlark.net/starlark"
 )
 
 var _ starlark.Callable = &BzlRule{}
-
-type Label struct {
-	Repo, Package, Name string
-}
-
-func (l *Label) String() string {
-	return fmt.Sprintf("@%s//%s:%s", l.Repo, l.Package, l.Name)
-}
 
 type Attr struct {
 	kind string
 }
 
 type BzlRule struct {
-	DefinedIn Label
+	DefinedIn labels.Label
 	Kind      string
 	Impl      starlark.Callable
 	Attrs     map[string]Attr

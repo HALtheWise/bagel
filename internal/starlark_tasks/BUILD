@@ -20,6 +20,7 @@ go_library(
     importpath = "github.com/HALtheWise/balez/internal/starlark_tasks",
     visibility = ["//:__subpackages__"],
     deps = [
+        "//internal/labels",
         "//internal/task",
         "@net_starlark_go//starlark",
     ],
