@@ -9,7 +9,6 @@ go_library(
         "//internal/labels",
         "//internal/starlark_tasks",
         "//internal/task",
-        "@com_github_jessevdk_go_flags//:go_default_library",
     ],
 )
 

@@ -1,6 +1,8 @@
 package starlark_tasks
 
 import (
+	"fmt"
+
 	"github.com/HALtheWise/balez/internal/labels"
 	"github.com/HALtheWise/balez/internal/task"
 	"go.starlark.net/starlark"
@@ -28,6 +30,14 @@ var T_EvalStarlark = task.Task1("T_EvalStarlark",
 			panic(err)
 		}
 
+		// Store the names of the rules. This only works if they were uniquely assigned.
+		for name, v := range globals {
+			if rule, ok := v.(*BzlRule); ok {
+				rule.Kind = name
+			}
+		}
+
+		// Freeze everything before we throw out the thread
 		for _, v := range globals {
 			v.Freeze()
 		}
@@ -35,20 +45,39 @@ var T_EvalStarlark = task.Task1("T_EvalStarlark",
 		return StarlarkFileResults{globals, ruleNames}
 	})
 
-var T_RuleExists = task.Task1("T_RuleExists", func(c *task.Context, l labels.Label) bool {
+var T_RuleInfoUnconfigured = task.Task1("T_RuleInfoUnconfigured", func(c *task.Context, l labels.Label) *BzlRule {
 	buildfile := labels.T_FindBuildFile(c, l.Package)
 	if buildfile == labels.NullLabel {
-		return false
+		return nil
 	}
 
 	parsed := T_EvalStarlark(c, buildfile)
-	_, ok := parsed.rules[l.Name]
-	return ok
+	return parsed.rules[l.Name]
+})
+
+var T_RuleInfoConfigured = task.Task1("T_RuleInfoConfigured", func(c *task.Context, l labels.Label) *ConfiguredRule {
+	unconfigured := T_RuleInfoUnconfigured(c, l)
+	if unconfigured == nil {
+		return nil
+	}
+
+	thread := &starlark.Thread{Name: "Rule configuration thread: " + l.String()}
+	providers, err := starlark.Call(thread, unconfigured.Impl, starlark.Tuple{
+		&BzlCtx{BzlLabel{label: l, frozen: false}}, // ctx
+	}, []starlark.Tuple{})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("providers", providers)
+	return &ConfiguredRule{
+		providers: []string{"Unimplemented providerssss"},
+	}
 })
 
 func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var impl starlark.Callable
-	starlark.UnpackArgs(b.Name(), args, kwargs, "_impl", &impl)
+	starlark.UnpackArgs(b.Name(), args, kwargs, "implementation", &impl)
 	rule := &BzlRule{
 		DefinedIn: thread.Local("label").(labels.Label),
 		Kind:      "",

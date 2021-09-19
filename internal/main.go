@@ -18,7 +18,9 @@ func main() {
 
 	label := labels.ParseLabel(os.Args[1])
 
-	fmt.Println("Exists:", starlark_tasks.T_RuleExists(ctx, label))
+	fmt.Println("Unconfigured:", starlark_tasks.T_RuleInfoUnconfigured(ctx, label))
+
+	fmt.Println("Configured:", starlark_tasks.T_RuleInfoConfigured(ctx, label))
 
 	fmt.Println("Stats: ", task.GetGlobalStats(ctx))
 }

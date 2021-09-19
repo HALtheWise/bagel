@@ -14,6 +14,8 @@ go_library(
 go_library(
     name = "starlark_tasks",
     srcs = [
+        "configured.go",
+        "ctx.go",
         "read_file.go",
         "rule.go",
     ],
