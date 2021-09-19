@@ -1,8 +1,6 @@
 package starlark_tasks
 
 import (
-	"fmt"
-
 	"github.com/HALtheWise/balez/internal/labels"
 	"github.com/HALtheWise/balez/internal/task"
 	"go.starlark.net/starlark"
@@ -33,8 +31,6 @@ var T_EvalStarlark = task.Task1("T_EvalStarlark",
 		for _, v := range globals {
 			v.Freeze()
 		}
-
-		fmt.Printf("Globals=%v, rules=%v\n", globals, ruleNames)
 
 		return StarlarkFileResults{globals, ruleNames}
 	})

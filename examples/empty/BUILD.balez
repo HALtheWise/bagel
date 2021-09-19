@@ -5,4 +5,4 @@ foo_binary = rule(
     implementation = _foo_binary_impl,
 )
 
-foo_binary(name = "helloworld")
+foo_binary(name = "bin")

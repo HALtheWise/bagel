@@ -15,9 +15,10 @@ func main() {
 	}
 
 	ctx := task.Root()
-	// starlark_tasks.T_EvalStarlark(ctx, labels.ParseLabel("//internal/starlark_tasks:test.bzl"))
 
-	fmt.Println("Exists:", starlark_tasks.T_RuleExists(ctx, labels.ParseLabel("//examples/empty_rule:helloworld")))
+	label := labels.ParseLabel(os.Args[1])
+
+	fmt.Println("Exists:", starlark_tasks.T_RuleExists(ctx, label))
 
 	fmt.Println("Stats: ", task.GetGlobalStats(ctx))
 }
