@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "rules",
+    srcs = ["read_file.go"],
+    importpath = "github.com/HALtheWise/balez/internal/rules",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/task",
+        "@net_starlark_go//starlark",
+    ],
+)
+
+go_library(
+    name = "starlark_tasks",
+    srcs = ["read_file.go"],
+    importpath = "github.com/HALtheWise/balez/internal/starlark_tasks",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/task",
+        "@net_starlark_go//starlark",
+    ],
+)
