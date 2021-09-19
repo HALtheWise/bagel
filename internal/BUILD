@@ -16,3 +16,8 @@ go_binary(
     embed = [":internal_lib"],
     visibility = ["//:__subpackages__"],
 )
+
+print({
+    go_binary: 1,
+    # "ac".startswith: 2,
+})

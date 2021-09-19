@@ -13,7 +13,10 @@ go_library(
 
 go_library(
     name = "starlark_tasks",
-    srcs = ["read_file.go"],
+    srcs = [
+        "read_file.go",
+        "rule.go",
+    ],
     importpath = "github.com/HALtheWise/balez/internal/starlark_tasks",
     visibility = ["//:__subpackages__"],
     deps = [

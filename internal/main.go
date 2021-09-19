@@ -13,5 +13,5 @@ func main() {
 	}
 
 	ctx := task.Root()
-	starlark_tasks.ExecuteFileT(ctx, "internal/starlark_tasks/test.bzl")
+	starlark_tasks.T_ExecuteFile(ctx, "internal/starlark_tasks/test.bzl")
 }

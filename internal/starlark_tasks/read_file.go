@@ -9,37 +9,43 @@ import (
 
 type StarlarkFileResults struct {
 	globals starlark.StringDict
-	rules   map[string]bool
+	rules   map[string]*BzlRule
 }
 
-var ExecuteFileT = task.Task1("starlark.ExecuteFileT",
+var T_ExecuteFile = task.Task1("starlark.ExecuteFileT",
 	func(c *task.Context, path string) StarlarkFileResults {
 		thread := &starlark.Thread{Name: "single file thread: " + path}
 
-		ruleNames := []string{}
-		thread.SetLocal("rules", &ruleNames)
+		ruleNames := map[string]*BzlRule{}
+		thread.SetLocal("rules", ruleNames)
+		thread.SetLocal("label", Label{"", path, ""})
 
 		predeclared := starlark.StringDict{
 			"rule": starlark.NewBuiltin("rule", starlarkRuleFunc),
 		}
 
 		globals, err := starlark.ExecFile(thread, path, nil, predeclared)
+		if err != nil {
+			panic(err)
+		}
 
-		fmt.Printf("Globals, err, %v, %v", globals, err)
+		for _, v := range globals {
+			v.Freeze()
+		}
 
-		return StarlarkFileResults{}
+		fmt.Printf("Globals=%v, rules=%v", globals, ruleNames)
+
+		return StarlarkFileResults{globals, ruleNames}
 	})
 
 func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-
-	rule := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var name string
-		starlark.UnpackArgs(b.Name(), args, kwargs, "name", &name)
-
-		rules := thread.Local("rules").(*[]string)
-		*rules = append(*rules, name)
-		return nil, nil
+	var impl starlark.Callable
+	starlark.UnpackArgs(b.Name(), args, kwargs, "_impl", &impl)
+	rule := &BzlRule{
+		DefinedIn: thread.Local("label").(Label),
+		Kind:      "",
+		Impl:      impl,
+		Attrs:     nil,
 	}
-
-	return starlark.NewBuiltin("unnamed", rule), nil
+	return rule, nil
 }
