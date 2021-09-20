@@ -1,9 +1,9 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "books",
-    srcs = ["books.capnp.go"],
-    importpath = "github.com/HALtheWise/balez/internal/dcache/books",
+    name = "graph",
+    srcs = ["graph.capnp.go"],
+    importpath = "github.com/HALtheWise/balez/internal/dcache/graph",
     visibility = ["//:__subpackages__"],
     deps = [
         "@com_zombiezen_go_capnproto2//:go_default_library",

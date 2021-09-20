@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/HALtheWise/balez/internal/dcache",
     visibility = ["//visibility:private"],
     deps = [
-        "//internal/dcache/books",
+        "//internal/dcache/graph",
         "@com_zombiezen_go_capnproto2//:go_default_library",
     ],
 )

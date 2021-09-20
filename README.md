@@ -50,7 +50,7 @@ Fish:
 
 ```
 begin
-    set -lx PATH $PATH bazel-bin/external/com_zombiezen_go_capnproto2/capnpc-go/capnpc-go_/
-    capnp compile -ogo internal/dcache/books/books.capnp -I bazel-balez/external/com_zombiezen_go_capnproto2/std/
+  set -lx PATH $PATH .bazel-bin/external/com_zombiezen_go_capnproto2/capnpc-go/capnpc-go_/
+  capnp compile -ogo internal/dcache/graph/graph.capnp -I .bazel-balez/external/com_zombiezen_go_capnproto2/std/
 end
 ```
