@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "dcache_lib",
+    srcs = ["file.go"],
+    importpath = "github.com/HALtheWise/balez/internal/dcache",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//internal/dcache/books",
+        "@com_zombiezen_go_capnproto2//:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "dcache",
+    embed = [":dcache_lib"],
+    visibility = ["//:__subpackages__"],
+)

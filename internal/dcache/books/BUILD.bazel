@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "books",
+    srcs = ["books.capnp.go"],
+    importpath = "github.com/HALtheWise/balez/internal/dcache/books",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@com_zombiezen_go_capnproto2//:go_default_library",
+        "@com_zombiezen_go_capnproto2//encoding/text:go_default_library",
+        "@com_zombiezen_go_capnproto2//schemas:go_default_library",
+    ],
+)

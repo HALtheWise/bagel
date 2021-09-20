@@ -107,6 +107,8 @@ def go_deps():
     )
     go_repository(
         name = "com_zombiezen_go_capnproto2",
+        build_file_generation = "off",
+        build_naming_convention = "go_default_library",
         importpath = "zombiezen.com/go/capnproto2",
         sum = "h1:v3BD1zbruvffn7zjJUU5Pn8nZAB11bhZSQC4W+YnnKo=",
         version = "v2.18.2+incompatible",
