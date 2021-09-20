@@ -43,3 +43,14 @@ Instead of an explicit graph representation, just stick with memoized function c
 ### Setup
 
 https://github.com/golang/tools/blob/master/gopls/doc/advanced.md#working-with-generic-code
+
+`sudo apt install capnproto`
+
+Fish:
+
+```
+begin
+    set -lx PATH $PATH bazel-bin/external/com_zombiezen_go_capnproto2/capnpc-go/capnpc-go_/
+    capnp compile -ogo internal/dcache/books/books.capnp -I bazel-balez/external/com_zombiezen_go_capnproto2/std/
+end
+```
