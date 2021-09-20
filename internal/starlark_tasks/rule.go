@@ -28,22 +28,14 @@ func (r *BzlRule) String() string {
 	}
 }
 
-func (r *BzlRule) Type() string {
-	panic("rule")
-}
+func (r *BzlRule) Type() string          { return "builtin" }
+func (r *BzlRule) Truth() starlark.Bool  { return true }
+func (r *BzlRule) Hash() (uint32, error) { return 0, fmt.Errorf("rule objects are not hashable") }
 
 func (r *BzlRule) Freeze() {
 	if r.Impl != nil {
 		r.Impl.Freeze()
 	}
-}
-
-func (r *BzlRule) Truth() starlark.Bool {
-	return starlark.True
-}
-
-func (r *BzlRule) Hash() (uint32, error) {
-	return 0, fmt.Errorf("rule objects are not hashable")
 }
 
 func (r *BzlRule) Name() string {
@@ -56,7 +48,10 @@ func (r *BzlRule) Name() string {
 
 func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var name string
-	starlark.UnpackArgs(r.Name(), args, kwargs, "name", &name)
+
+	if err := starlark.UnpackArgs(r.Name(), args, kwargs, "name", &name); err != nil {
+		return nil, err
+	}
 
 	rules := thread.Local("rules").(map[string]*BzlRule)
 	rules[name] = r

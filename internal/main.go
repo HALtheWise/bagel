@@ -20,7 +20,7 @@ func main() {
 
 	fmt.Println("Unconfigured:", starlark_tasks.T_RuleInfoUnconfigured(ctx, label))
 
-	fmt.Println("Configured:", starlark_tasks.T_RuleInfoConfigured(ctx, label))
+	fmt.Println("Configured:", starlark_tasks.T_RuleInfoEvaluated(ctx, label))
 
 	fmt.Println("Stats: ", task.GetGlobalStats(ctx))
 }

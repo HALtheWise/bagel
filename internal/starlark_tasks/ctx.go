@@ -39,13 +39,15 @@ type BzlCtx struct {
 }
 
 func (c *BzlCtx) AttrNames() []string {
-	return []string{"label"} // TODO: lots
+	return []string{"label", "actions"} // TODO: lots
 }
 
 func (c *BzlCtx) Attr(name string) (starlark.Value, error) {
 	switch name {
 	case "label":
 		return &c.label, nil
+	case "actions":
+		return &BzlActions{c}, nil
 	}
 	return nil, nil
 }
