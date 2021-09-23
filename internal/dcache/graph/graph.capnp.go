@@ -8,208 +8,214 @@ import (
 	schemas "zombiezen.com/go/capnproto2/schemas"
 )
 
-type CacheEntry struct{ capnp.Struct }
+type RefData struct{ capnp.Struct }
 
-// CacheEntry_TypeID is the unique identifier for the type CacheEntry.
-const CacheEntry_TypeID = 0x90bfaf0383e76e8a
+// RefData_TypeID is the unique identifier for the type RefData.
+const RefData_TypeID = 0x98886448aacaa938
 
-func NewCacheEntry(s *capnp.Segment) (CacheEntry, error) {
-	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 24, PointerCount: 4})
-	return CacheEntry{st}, err
+func NewRefData(s *capnp.Segment) (RefData, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 0})
+	return RefData{st}, err
 }
 
-func NewRootCacheEntry(s *capnp.Segment) (CacheEntry, error) {
-	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 24, PointerCount: 4})
-	return CacheEntry{st}, err
+func NewRootRefData(s *capnp.Segment) (RefData, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 0})
+	return RefData{st}, err
 }
 
-func ReadRootCacheEntry(msg *capnp.Message) (CacheEntry, error) {
+func ReadRootRefData(msg *capnp.Message) (RefData, error) {
 	root, err := msg.RootPtr()
-	return CacheEntry{root.Struct()}, err
+	return RefData{root.Struct()}, err
 }
 
-func (s CacheEntry) String() string {
-	str, _ := text.Marshal(0x90bfaf0383e76e8a, s.Struct)
+func (s RefData) String() string {
+	str, _ := text.Marshal(0x98886448aacaa938, s.Struct)
 	return str
 }
 
-func (s CacheEntry) Id() int32 {
-	return int32(s.Struct.Uint32(0))
+func (s RefData) Left() uint32 {
+	return s.Struct.Uint32(0)
 }
 
-func (s CacheEntry) SetId(v int32) {
-	s.Struct.SetUint32(0, uint32(v))
+func (s RefData) SetLeft(v uint32) {
+	s.Struct.SetUint32(0, v)
 }
 
-func (s CacheEntry) MaybeDirty() bool {
-	return s.Struct.Bit(32)
+func (s RefData) Right() uint32 {
+	return s.Struct.Uint32(4)
 }
 
-func (s CacheEntry) SetMaybeDirty(v bool) {
-	s.Struct.SetBit(32, v)
+func (s RefData) SetRight(v uint32) {
+	s.Struct.SetUint32(4, v)
 }
 
-func (s CacheEntry) ChangedAt() int32 {
-	return int32(s.Struct.Uint32(8))
+// RefData_List is a list of RefData.
+type RefData_List struct{ capnp.List }
+
+// NewRefData creates a new list of RefData.
+func NewRefData_List(s *capnp.Segment, sz int32) (RefData_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 0}, sz)
+	return RefData_List{l}, err
 }
 
-func (s CacheEntry) SetChangedAt(v int32) {
-	s.Struct.SetUint32(8, uint32(v))
+func (s RefData_List) At(i int) RefData { return RefData{s.List.Struct(i)} }
+
+func (s RefData_List) Set(i int, v RefData) error { return s.List.SetStruct(i, v.Struct) }
+
+func (s RefData_List) String() string {
+	str, _ := text.MarshalList(0x98886448aacaa938, s.List)
+	return str
 }
 
-func (s CacheEntry) Dependencies() (capnp.Int32List, error) {
-	p, err := s.Struct.Ptr(1)
-	return capnp.Int32List{List: p.List()}, err
+// RefData_Promise is a wrapper for a RefData promised by a client call.
+type RefData_Promise struct{ *capnp.Pipeline }
+
+func (p RefData_Promise) Struct() (RefData, error) {
+	s, err := p.Pipeline.Struct()
+	return RefData{s}, err
 }
 
-func (s CacheEntry) HasDependencies() bool {
-	p, err := s.Struct.Ptr(1)
+type FuncObj struct{ capnp.Struct }
+
+// FuncObj_TypeID is the unique identifier for the type FuncObj.
+const FuncObj_TypeID = 0x833effa94af38e69
+
+func NewFuncObj(s *capnp.Segment) (FuncObj, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2})
+	return FuncObj{st}, err
+}
+
+func NewRootFuncObj(s *capnp.Segment) (FuncObj, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2})
+	return FuncObj{st}, err
+}
+
+func ReadRootFuncObj(msg *capnp.Message) (FuncObj, error) {
+	root, err := msg.RootPtr()
+	return FuncObj{root.Struct()}, err
+}
+
+func (s FuncObj) String() string {
+	str, _ := text.Marshal(0x833effa94af38e69, s.Struct)
+	return str
+}
+
+func (s FuncObj) Kind() uint16 {
+	return s.Struct.Uint16(4)
+}
+
+func (s FuncObj) SetKind(v uint16) {
+	s.Struct.SetUint16(4, v)
+}
+
+func (s FuncObj) Arg() uint32 {
+	return s.Struct.Uint32(0)
+}
+
+func (s FuncObj) SetArg(v uint32) {
+	s.Struct.SetUint32(0, v)
+}
+
+func (s FuncObj) Dependencies() (capnp.UInt32List, error) {
+	p, err := s.Struct.Ptr(0)
+	return capnp.UInt32List{List: p.List()}, err
+}
+
+func (s FuncObj) HasDependencies() bool {
+	p, err := s.Struct.Ptr(0)
 	return p.IsValid() || err != nil
 }
 
-func (s CacheEntry) SetDependencies(v capnp.Int32List) error {
-	return s.Struct.SetPtr(1, v.List.ToPtr())
+func (s FuncObj) SetDependencies(v capnp.UInt32List) error {
+	return s.Struct.SetPtr(0, v.List.ToPtr())
 }
 
 // NewDependencies sets the dependencies field to a newly
-// allocated capnp.Int32List, preferring placement in s's segment.
-func (s CacheEntry) NewDependencies(n int32) (capnp.Int32List, error) {
-	l, err := capnp.NewInt32List(s.Struct.Segment(), n)
+// allocated capnp.UInt32List, preferring placement in s's segment.
+func (s FuncObj) NewDependencies(n int32) (capnp.UInt32List, error) {
+	l, err := capnp.NewUInt32List(s.Struct.Segment(), n)
 	if err != nil {
-		return capnp.Int32List{}, err
+		return capnp.UInt32List{}, err
 	}
-	err = s.Struct.SetPtr(1, l.List.ToPtr())
+	err = s.Struct.SetPtr(0, l.List.ToPtr())
 	return l, err
 }
 
-func (s CacheEntry) Dependents() (capnp.Int32List, error) {
-	p, err := s.Struct.Ptr(2)
-	return capnp.Int32List{List: p.List()}, err
+func (s FuncObj) Result() (capnp.Pointer, error) {
+	return s.Struct.Pointer(1)
 }
 
-func (s CacheEntry) HasDependents() bool {
-	p, err := s.Struct.Ptr(2)
+func (s FuncObj) HasResult() bool {
+	p, err := s.Struct.Ptr(1)
 	return p.IsValid() || err != nil
 }
 
-func (s CacheEntry) SetDependents(v capnp.Int32List) error {
-	return s.Struct.SetPtr(2, v.List.ToPtr())
+func (s FuncObj) ResultPtr() (capnp.Ptr, error) {
+	return s.Struct.Ptr(1)
 }
 
-// NewDependents sets the dependents field to a newly
-// allocated capnp.Int32List, preferring placement in s's segment.
-func (s CacheEntry) NewDependents(n int32) (capnp.Int32List, error) {
-	l, err := capnp.NewInt32List(s.Struct.Segment(), n)
-	if err != nil {
-		return capnp.Int32List{}, err
-	}
-	err = s.Struct.SetPtr(2, l.List.ToPtr())
-	return l, err
+func (s FuncObj) SetResult(v capnp.Pointer) error {
+	return s.Struct.SetPointer(1, v)
 }
 
-func (s CacheEntry) ArgsHash() int64 {
-	return int64(s.Struct.Uint64(16))
+func (s FuncObj) SetResultPtr(v capnp.Ptr) error {
+	return s.Struct.SetPtr(1, v)
 }
 
-func (s CacheEntry) SetArgsHash(v int64) {
-	s.Struct.SetUint64(16, uint64(v))
+// FuncObj_List is a list of FuncObj.
+type FuncObj_List struct{ capnp.List }
+
+// NewFuncObj creates a new list of FuncObj.
+func NewFuncObj_List(s *capnp.Segment, sz int32) (FuncObj_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 2}, sz)
+	return FuncObj_List{l}, err
 }
 
-func (s CacheEntry) Result() (capnp.Pointer, error) {
-	return s.Struct.Pointer(3)
-}
+func (s FuncObj_List) At(i int) FuncObj { return FuncObj{s.List.Struct(i)} }
 
-func (s CacheEntry) HasResult() bool {
-	p, err := s.Struct.Ptr(3)
-	return p.IsValid() || err != nil
-}
+func (s FuncObj_List) Set(i int, v FuncObj) error { return s.List.SetStruct(i, v.Struct) }
 
-func (s CacheEntry) ResultPtr() (capnp.Ptr, error) {
-	return s.Struct.Ptr(3)
-}
-
-func (s CacheEntry) SetResult(v capnp.Pointer) error {
-	return s.Struct.SetPointer(3, v)
-}
-
-func (s CacheEntry) SetResultPtr(v capnp.Ptr) error {
-	return s.Struct.SetPtr(3, v)
-}
-
-func (s CacheEntry) Name() (string, error) {
-	p, err := s.Struct.Ptr(0)
-	return p.Text(), err
-}
-
-func (s CacheEntry) HasName() bool {
-	p, err := s.Struct.Ptr(0)
-	return p.IsValid() || err != nil
-}
-
-func (s CacheEntry) NameBytes() ([]byte, error) {
-	p, err := s.Struct.Ptr(0)
-	return p.TextBytes(), err
-}
-
-func (s CacheEntry) SetName(v string) error {
-	return s.Struct.SetText(0, v)
-}
-
-// CacheEntry_List is a list of CacheEntry.
-type CacheEntry_List struct{ capnp.List }
-
-// NewCacheEntry creates a new list of CacheEntry.
-func NewCacheEntry_List(s *capnp.Segment, sz int32) (CacheEntry_List, error) {
-	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 24, PointerCount: 4}, sz)
-	return CacheEntry_List{l}, err
-}
-
-func (s CacheEntry_List) At(i int) CacheEntry { return CacheEntry{s.List.Struct(i)} }
-
-func (s CacheEntry_List) Set(i int, v CacheEntry) error { return s.List.SetStruct(i, v.Struct) }
-
-func (s CacheEntry_List) String() string {
-	str, _ := text.MarshalList(0x90bfaf0383e76e8a, s.List)
+func (s FuncObj_List) String() string {
+	str, _ := text.MarshalList(0x833effa94af38e69, s.List)
 	return str
 }
 
-// CacheEntry_Promise is a wrapper for a CacheEntry promised by a client call.
-type CacheEntry_Promise struct{ *capnp.Pipeline }
+// FuncObj_Promise is a wrapper for a FuncObj promised by a client call.
+type FuncObj_Promise struct{ *capnp.Pipeline }
 
-func (p CacheEntry_Promise) Struct() (CacheEntry, error) {
+func (p FuncObj_Promise) Struct() (FuncObj, error) {
 	s, err := p.Pipeline.Struct()
-	return CacheEntry{s}, err
+	return FuncObj{s}, err
 }
 
-func (p CacheEntry_Promise) Result() *capnp.Pipeline {
-	return p.Pipeline.GetPipeline(3)
+func (p FuncObj_Promise) Result() *capnp.Pipeline {
+	return p.Pipeline.GetPipeline(1)
 }
 
-const schema_85d3acc39d94e0f8 = "x\xdad\xd01k\x14Q\x14\x05\xe0s\xee}\xb3\xdb" +
-	"\x84\xac/;\x82J\x8a(\x0aja\xb0M\xa3\xa2\x82" +
-	"X\xe5e\xba4\xf2\x9cy\xecLH\x1e\xc3\xccXl" +
-	"-6V\x16\x96\xfa\x0f\x04\x7f\x82\x85\x85\x8d\x8d\xa8`" +
-	"\xa1\xb0\x8d\x18\xc1\x1f`7\xf2\x14A\xb0\xb9\\\xbes" +
-	"\xaas\xe2\xd9u\xb1\xd9=\xc0\x99l2>\x8e\xdf\x1e" +
-	"\xea\xcbWO\xe0\xceQ\xc7\x9f\xab\xa7\xcf_\xbfx\xff" +
-	"\x08\x99\x99\x02WO\x1e\xd0^J\xcf\x857\x04\xc7&" +
-	"\x0e\xa1\x8b\xfe\xd0lW\xa5/\xeb\xb0\xbd\xe8|[\xff" +
-	"\xb9WJ\xdf\xc6v\xe7f\xf2\xdb\xb38t\xcb]\xd2" +
-	"m\xa9\x01\x0c\x01\xfb\xee\x0c\xe0\xde*\xdd'\xa1\xe5V" +
-	"\xce\x84\x1f\xf7\x01\xf7A\xe9VB+\x92S\x00\xfbe" +
-	"\x0fp\x9f\x95\xeeX\xc8iN\x05\xec\xd7\xcb\x80[)" +
-	"\xdd\x0f\xa1U\xe64\x80\xfd~\x00\xb8cea(\xb4" +
-	"Frf\xc0\x9c\xdc\x07\xf6\xa8,6\x13g\x92s\x02" +
-	"\xccO\xf3.P\x9cJ~>\xf9DsN\x81\xf9Y" +
-	"\xee\x00\xc5f\xf2\x8b\x14jS\xd1@h\xc0\xf1\xc8/" +
-	"\xef\x87[M\x07\x1d\x96$\x84i\x83\xb2\xf6q\x11\xaa" +
-	"\x1b\xe0\xf0\xb78\x8b\xfe(p\x0d\xc25p\xacB\x1b" +
-	"b\x15\"fe\x13z\xae\x83\xbb\xca\xdf\xd5\xf5\x7fS" +
-	"\x1d\xfe\xcb|\xb7\xe8\xef\xf8\xbe\x06\xc0\x0c\xc2\x0c\xbc\xd6" +
-	"\x85\xfe\xc1\xe1\xc0\x0d\x087\xc0_\x01\x00\x00\xff\xff\xce" +
-	"\xe6Yg"
+const schema_85d3acc39d94e0f8 = "x\xda\x8c\xcf\xbfJ#Q\x18\x05\xf0s\xee\x9d\xecL" +
+	"\x95\xe4&\xe9\x17\xc2\x16\xbb\x0b\xbb\xd9\x7f\xc5n\x8a\xdd" +
+	"\x15DT\x10s\x03v\x16^gn2\x13\x87a\x98" +
+	"L\xb0\xb1\x11\x15bcea\xe3\x03D\xec}\x00;" +
+	"[_\xc0\xce\x07\xb0\xb1\x1bI\x82\x16V6\x1f|\x87" +
+	"S\x9c_\xf5\xf8\xbfP\xa5+@{\xa5wEt\xf2" +
+	"\xb0:)\xfe\x1e@7\xc9\xe2\xf1\xee\xf4\xfc\xfa\xf2\xf6" +
+	"\x08%\xe1\x02\xdf\x17\xbaT\x1b.\xa0\xf4=X\xfc\x9e" +
+	"\xdc\\,\x07\xe3\xb3WU\xc7\x05~\xfea\x97\xf55" +
+	"\xba@}\x85\xbb`\x11%\xb9\xcd\x12\x13;\xad\xc07" +
+	"~h[\xfd\xcc\xa4\xe1\xfc~\xf5M\x9a\xa4\xed\xa5Q" +
+	"\xe2\xafos\xd0!uU:\xa4C@\x99&\xa07" +
+	"%u(X\x15\x0dN3\xfb\x19\xd0[\x92:\x16\xa4" +
+	"hP\x00*\x1a\x00:\x94\xd4\x87\x82J\xb2A\x09\xa8" +
+	"\xfd6\xa0\xf7$\xf5X\xd05Y\x9f\x1e\x04=\xb0\xb2" +
+	"\x13%\x01]\x08\xba`\x11\xd8\xd4&\x81MP\xf1#" +
+	";d\x19\xecH\xce\xaae\xf0_f\x87\xa38g\x0d" +
+	"\x82\xb5\xb7A\xba\xb6\xb7hr\x9a)\xc4\x93\x0e0\x83" +
+	"|\x9a\x8e\xfe \xa9\xbf\x09*r.\xf9\xf2\x03\xd0\x1f" +
+	"%\xf5/\xc1Jl{\xf9\xf3\xc2\xf7Y\xd4\x0f_\xbe" +
+	"\xa7\x00\x00\x00\xff\xff\xedy_\x91"
 
 func init() {
 	schemas.Register(schema_85d3acc39d94e0f8,
-		0x90bfaf0383e76e8a)
+		0x833effa94af38e69,
+		0x98886448aacaa938)
 }

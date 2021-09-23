@@ -9,7 +9,7 @@ $Go.import("github.com/HALtheWise/bales/internal/dcache/graph");
 # 	- Store the token returned by the file watcher
 # 	- Find FileStatInfo for all those in the database and set maybe_dirty=true
 # 	- Propagate maybe_dirty up the tree through dependents
-# - Do some work (query, build, etc.)
+# - Do some work (query, bUIld, etc.)
 # 	- To get an output
 # 		- Hash arguments. If in cache and result in cache
 # 			- If maybe_dirty = false, return result
@@ -52,36 +52,16 @@ $Go.import("github.com/HALtheWise/bales/internal/dcache/graph");
 # 		- call a Task that returns the full Starlark object (with lambdas and shit)
 # 	- The former can invoke the latter if something weird's going on
 
-
-struct CacheEntry {
-	id @0 :Int32; 
-	# A unique ID. Maybe can be deleted in the future, and just store indexes.
-
-	maybeDirty @1 :Bool;
-	# Set to True if this cache entry is potentially stale.
-
-	changedAt @2 :Int32;
-	# The cache epoch at which the cached value was most recently updated with a new value
-
-	# recomputed_at @5 :Int32;
-	# The cache epoch at which this value was most recently verified correct by recomputing it
-
-	dependencies @4 :List(Int32);
-	# Cache entries of the data that went into computing this
-
-	dependents @5 :List(Int32);
-	# Other cache entries that use the data from this
-	# Needed for propagating maybeDirty
-
-	argsHash @6 :Int64;
-	# Trustworthy hash of arguments to this function
-
-	result @7 :AnyPointer;
-	# The result to return
-
-
-	# Debugging fields, may be absent
-
-	name @3 :Text;
-	# Optional descriptor of generating function
+# RefData is an entry in the Refs table. See refs.go for information on interpretation.
+struct RefData {
+	left @0 :UInt32;
+	right @1 :UInt32;
 }
+
+struct FuncObj {
+	kind @1 :UInt16; # Kind of function call, determined from initialization order.
+	arg @0 :UInt32; # Index pointing into Refs table
+	dependencies @2 :List(UInt32); # List of indexes into the Funcs table
+	result @3 :AnyPointer; # Capnp object storing the result. May be null if result is not stored in file cache.
+}
+
