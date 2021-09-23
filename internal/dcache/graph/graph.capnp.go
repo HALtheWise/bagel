@@ -192,30 +192,236 @@ func (p FuncObj_Promise) Result() *capnp.Pipeline {
 	return p.Pipeline.GetPipeline(1)
 }
 
-const schema_85d3acc39d94e0f8 = "x\xda\x8c\xcf\xbfJ#Q\x18\x05\xf0s\xee\x9d\xecL" +
-	"\x95\xe4&\xe9\x17\xc2\x16\xbb\x0b\xbb\xd9\x7f\xc5n\x8a\xdd" +
-	"\x15DT\x10s\x03v\x16^gn2\x13\x87a\x98" +
-	"L\xb0\xb1\x11\x15bcea\xe3\x03D\xec}\x00;" +
-	"[_\xc0\xce\x07\xb0\xb1\x1bI\x82\x16V6\x1f|\x87" +
-	"S\x9c_\xf5\xf8\xbfP\xa5+@{\xa5wEt\xf2" +
-	"\xb0:)\xfe\x1e@7\xc9\xe2\xf1\xee\xf4\xfc\xfa\xf2\xf6" +
-	"\x08%\xe1\x02\xdf\x17\xbaT\x1b.\xa0\xf4=X\xfc\x9e" +
-	"\xdc\\,\x07\xe3\xb3WU\xc7\x05~\xfea\x97\xf55" +
-	"\xba@}\x85\xbb`\x11%\xb9\xcd\x12\x13;\xad\xc07" +
-	"~h[\xfd\xcc\xa4\xe1\xfc~\xf5M\x9a\xa4\xed\xa5Q" +
-	"\xe2\xafos\xd0!uU:\xa4C@\x99&\xa07" +
-	"%u(X\x15\x0dN3\xfb\x19\xd0[\x92:\x16\xa4" +
-	"hP\x00*\x1a\x00:\x94\xd4\x87\x82J\xb2A\x09\xa8" +
-	"\xfd6\xa0\xf7$\xf5X\xd05Y\x9f\x1e\x04=\xb0\xb2" +
-	"\x13%\x01]\x08\xba`\x11\xd8\xd4&\x81MP\xf1#" +
-	";d\x19\xecH\xce\xaae\xf0_f\x87\xa38g\x0d" +
-	"\x82\xb5\xb7A\xba\xb6\xb7hr\x9a)\xc4\x93\x0e0\x83" +
-	"|\x9a\x8e\xfe \xa9\xbf\x09*r.\xf9\xf2\x03\xd0\x1f" +
-	"%\xf5/\xc1Jl{\xf9\xf3\xc2\xf7Y\xd4\x0f_\xbe" +
-	"\xa7\x00\x00\x00\xff\xff\xedy_\x91"
+type DiskCache struct{ capnp.Struct }
+
+// DiskCache_TypeID is the unique identifier for the type DiskCache.
+const DiskCache_TypeID = 0x8c65657245fa62cc
+
+func NewDiskCache(s *capnp.Segment) (DiskCache, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 4})
+	return DiskCache{st}, err
+}
+
+func NewRootDiskCache(s *capnp.Segment) (DiskCache, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 4})
+	return DiskCache{st}, err
+}
+
+func ReadRootDiskCache(msg *capnp.Message) (DiskCache, error) {
+	root, err := msg.RootPtr()
+	return DiskCache{root.Struct()}, err
+}
+
+func (s DiskCache) String() string {
+	str, _ := text.Marshal(0x8c65657245fa62cc, s.Struct)
+	return str
+}
+
+func (s DiskCache) Version() (string, error) {
+	p, err := s.Struct.Ptr(0)
+	return p.Text(), err
+}
+
+func (s DiskCache) HasVersion() bool {
+	p, err := s.Struct.Ptr(0)
+	return p.IsValid() || err != nil
+}
+
+func (s DiskCache) VersionBytes() ([]byte, error) {
+	p, err := s.Struct.Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s DiskCache) SetVersion(v string) error {
+	return s.Struct.SetText(0, v)
+}
+
+func (s DiskCache) Refs() (RefData_List, error) {
+	p, err := s.Struct.Ptr(1)
+	return RefData_List{List: p.List()}, err
+}
+
+func (s DiskCache) HasRefs() bool {
+	p, err := s.Struct.Ptr(1)
+	return p.IsValid() || err != nil
+}
+
+func (s DiskCache) SetRefs(v RefData_List) error {
+	return s.Struct.SetPtr(1, v.List.ToPtr())
+}
+
+// NewRefs sets the refs field to a newly
+// allocated RefData_List, preferring placement in s's segment.
+func (s DiskCache) NewRefs(n int32) (RefData_List, error) {
+	l, err := NewRefData_List(s.Struct.Segment(), n)
+	if err != nil {
+		return RefData_List{}, err
+	}
+	err = s.Struct.SetPtr(1, l.List.ToPtr())
+	return l, err
+}
+
+func (s DiskCache) Strings() ([]byte, error) {
+	p, err := s.Struct.Ptr(2)
+	return []byte(p.Data()), err
+}
+
+func (s DiskCache) HasStrings() bool {
+	p, err := s.Struct.Ptr(2)
+	return p.IsValid() || err != nil
+}
+
+func (s DiskCache) SetStrings(v []byte) error {
+	return s.Struct.SetData(2, v)
+}
+
+func (s DiskCache) Funcs() (FuncObj_List, error) {
+	p, err := s.Struct.Ptr(3)
+	return FuncObj_List{List: p.List()}, err
+}
+
+func (s DiskCache) HasFuncs() bool {
+	p, err := s.Struct.Ptr(3)
+	return p.IsValid() || err != nil
+}
+
+func (s DiskCache) SetFuncs(v FuncObj_List) error {
+	return s.Struct.SetPtr(3, v.List.ToPtr())
+}
+
+// NewFuncs sets the funcs field to a newly
+// allocated FuncObj_List, preferring placement in s's segment.
+func (s DiskCache) NewFuncs(n int32) (FuncObj_List, error) {
+	l, err := NewFuncObj_List(s.Struct.Segment(), n)
+	if err != nil {
+		return FuncObj_List{}, err
+	}
+	err = s.Struct.SetPtr(3, l.List.ToPtr())
+	return l, err
+}
+
+// DiskCache_List is a list of DiskCache.
+type DiskCache_List struct{ capnp.List }
+
+// NewDiskCache creates a new list of DiskCache.
+func NewDiskCache_List(s *capnp.Segment, sz int32) (DiskCache_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 4}, sz)
+	return DiskCache_List{l}, err
+}
+
+func (s DiskCache_List) At(i int) DiskCache { return DiskCache{s.List.Struct(i)} }
+
+func (s DiskCache_List) Set(i int, v DiskCache) error { return s.List.SetStruct(i, v.Struct) }
+
+func (s DiskCache_List) String() string {
+	str, _ := text.MarshalList(0x8c65657245fa62cc, s.List)
+	return str
+}
+
+// DiskCache_Promise is a wrapper for a DiskCache promised by a client call.
+type DiskCache_Promise struct{ *capnp.Pipeline }
+
+func (p DiskCache_Promise) Struct() (DiskCache, error) {
+	s, err := p.Pipeline.Struct()
+	return DiskCache{s}, err
+}
+
+type RefResult struct{ capnp.Struct }
+
+// RefResult_TypeID is the unique identifier for the type RefResult.
+const RefResult_TypeID = 0x98fd92d0ad976d9a
+
+func NewRefResult(s *capnp.Segment) (RefResult, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 0})
+	return RefResult{st}, err
+}
+
+func NewRootRefResult(s *capnp.Segment) (RefResult, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 8, PointerCount: 0})
+	return RefResult{st}, err
+}
+
+func ReadRootRefResult(msg *capnp.Message) (RefResult, error) {
+	root, err := msg.RootPtr()
+	return RefResult{root.Struct()}, err
+}
+
+func (s RefResult) String() string {
+	str, _ := text.Marshal(0x98fd92d0ad976d9a, s.Struct)
+	return str
+}
+
+func (s RefResult) Ref() uint32 {
+	return s.Struct.Uint32(0)
+}
+
+func (s RefResult) SetRef(v uint32) {
+	s.Struct.SetUint32(0, v)
+}
+
+// RefResult_List is a list of RefResult.
+type RefResult_List struct{ capnp.List }
+
+// NewRefResult creates a new list of RefResult.
+func NewRefResult_List(s *capnp.Segment, sz int32) (RefResult_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 8, PointerCount: 0}, sz)
+	return RefResult_List{l}, err
+}
+
+func (s RefResult_List) At(i int) RefResult { return RefResult{s.List.Struct(i)} }
+
+func (s RefResult_List) Set(i int, v RefResult) error { return s.List.SetStruct(i, v.Struct) }
+
+func (s RefResult_List) String() string {
+	str, _ := text.MarshalList(0x98fd92d0ad976d9a, s.List)
+	return str
+}
+
+// RefResult_Promise is a wrapper for a RefResult promised by a client call.
+type RefResult_Promise struct{ *capnp.Pipeline }
+
+func (p RefResult_Promise) Struct() (RefResult, error) {
+	s, err := p.Pipeline.Struct()
+	return RefResult{s}, err
+}
+
+const schema_85d3acc39d94e0f8 = "x\xda\x8c\x92Mk\x13_\x14\xc6\x9f\xe7\xdc\xe4?Y" +
+	"4M\xa6\xc9\x7f]\x08.T\xd0\xb6\xeaB\xba\xb0\xa2" +
+	"U\xc4\x8d\xbdY\xbbp2\xb9\xc9L\x1b\xc703\xf1" +
+	"\x05*UT\xe8B\x04\xa5\xe2\x0b\xb8p\xd1E\xc4~" +
+	"\x0aw\xe2B\xf0\x0b\xb8\xf3\x03\xb8\x11AFn\xd3N" +
+	"Cq\x91\xcd\x85{\xf8q\x9e\xf3\xe3\x9cy\xe1yY" +
+	"(v\x09\xe8j\xf1\xbf,|\xf6\xf3\xea0;\xf7\x08" +
+	"\xbaAf\xbf\xbeo\xbd\xfb\xf4\xf1\xdb\x13\x14\xc5\x01\x16" +
+	"\xde4\xe9\xee8\x80;\xfc\x01f_Z\xbf/\xc5\xc6" +
+	"<\x85\xdb\x18'\x0b\x0ep\xfa9[\xacm\xd3\x01j" +
+	"\xefi\xe1\xb3\xc3\xcf\x1f\xae\xb47_\x1f\xea\xbb\x0b\xbf" +
+	"\x94&kC\x9bP\xdb\x96;`\xf6\xf6\xe6\xab\x9d\xaf" +
+	"/\xfe\xfc\x13\xa6j\xb1\xf6\xbf\xb2\xb0\xab\x96\xc0,\x8c" +
+	"R\x13G^\xaf0\xd7\xf6=?0s\xdd\xd8\xeb\x07" +
+	"\xa3\xf7\xa4\xef\xf5\xa3\xfe\xe2\xe5A\xe4_kqu\x85" +
+	"\xd4UU \x0b\x04\\\xaf\x01\xe8\xeb\x8a:\x10V\xa5" +
+	"N[3\xc7\x01}CQ\xf7\x84\x94:\x05p\xc3U" +
+	"@\x07\x8a\xfa\xb1\xd0U\xacS\x01\xee\xc3E@\xaf+" +
+	"\xeaM\xa1\xe3\xc5]\x96 ,\x81\x95\xb50j\xd3\x81" +
+	"\xd0\x01\xb3\xb6\xe9\x9b\xa8m\"T\xfc\xd0$\x9c\x06W" +
+	"\x14w\xd1ip)6\xc9\xa0\x97r\x06\xc2\x99\xc9D" +
+	"\x96\xc3d\xed\xa2\xe7\xf8\x81\xd9S\x01F*\x17\x0eT" +
+	"\\\xf2\x90\xcb\xba\xd0\x95=\x99{\x96L\x15\xf5\x03+" +
+	"\xa3F2\xf7O\x01\xfa\xae\xa2\xde\x12n\xdc6q\x12" +
+	"\xde\x8a8\x05\xe1\x14X\x89M'\x9f\xbcz\xb0G\xd0" +
+	"\x167\x924\x0e\xa3n\xc22\x84ep\xb63\x88\xfc" +
+	"1<?\xa7\x11>\x89c\xd3t\x96\xbd\x94\x9e5," +
+	"\xe5\x86\xc7\xac\xcc\x11E=?fx\xc2\xce}TQ" +
+	"\x9f\x11Vz\xa6\x93\xeeoa6\x0e\xbbA\xfe\x9b0" +
+	"\xb5i\x12g\xd0Kmn!\xcf-\xdb#))\xea" +
+	"\xba\xd0\x89Mg\xbf\xe7\xdf\x00\x00\x00\xff\xfft{\xc7" +
+	"\x08"
 
 func init() {
 	schemas.Register(schema_85d3acc39d94e0f8,
 		0x833effa94af38e69,
-		0x98886448aacaa938)
+		0x8c65657245fa62cc,
+		0x98886448aacaa938,
+		0x98fd92d0ad976d9a)
 }

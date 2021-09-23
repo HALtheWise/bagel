@@ -62,6 +62,19 @@ struct FuncObj {
 	kind @1 :UInt16; # Kind of function call, determined from initialization order.
 	arg @0 :UInt32; # Index pointing into Refs table
 	dependencies @2 :List(UInt32); # List of indexes into the Funcs table
-	result @3 :AnyPointer; # Capnp object storing the result. May be null if result is not stored in file cache.
+	result @3 :AnyPointer; # Capnp object storing a *Result (see below). May be null if result is not stored in file cache.
 }
 
+
+struct DiskCache {
+	version @0 :Text; # Code version that populated this file
+	refs @1 :List(RefData); # Mapping from ref index to ref data
+	strings @2 :Data; # Blob storing strings data accessed through StringRefs
+	funcs @3 :List(FuncObj); # Mapping from func index to func data
+}
+
+## Cached result types for FuncObj
+
+struct RefResult {
+	ref @0 :UInt32; # Index into Refs table
+}
