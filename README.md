@@ -54,3 +54,21 @@ begin
   capnp compile -ogo internal/dcache/graph/graph.capnp -I .bazel-balez/external/com_zombiezen_go_capnproto2/std/
 end
 ```
+
+### Reading
+
+- https://paper.dropbox.com/doc/Salsa-In-More-Depth-2019.01-wYaiL8t72BdGGPFrnmt7h and https://www.youtube.com/watch?v=i_IhACacPRY
+- https://blog.nelhage.com/post/why-sorbet-is-fast
+- http://neugierig.org/software/blog/2020/05/ninja.html
+
+### Sorbet-inspired fast design
+
+- All hashable values are 32 bit refs indexing into tables of immutable values
+  - LabelRef, used for input filepaths and unconfigured rules
+    - i.e. argument to label or label_list attr immediately converted to LabelRef
+    - Can cheaply get from LabelRef -> LabelRef with "" as last section
+  - ConfigRef, representing a build configuration
+  - ActionRef, representing an action produced by a rule implementation
+- All memo calls take at most two refs as their arguments
+  - memotable = (funckind, arg1, arg2) -> (metadata, result?)
+  -
