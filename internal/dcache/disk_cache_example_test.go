@@ -1,14 +1,14 @@
-package main
+package dcache_test
 
 import (
-	"fmt"
 	"os"
+	"testing"
 
 	"github.com/HALtheWise/bales/internal/dcache/graph"
 	capnp "zombiezen.com/go/capnproto2"
 )
 
-func main() {
+func TestWrite(t *testing.T) {
 	version := "dev"
 	size := int32(4)
 
@@ -50,7 +50,7 @@ func main() {
 	refData.At(3).SetLeft(44)
 	refData.At(3).SetRight(45)
 
-	fmt.Println(len(seg.Data()), seg.Data())
+	t.Log(len(seg.Data()), seg.Data())
 	// Write the message to stdout.
 	err = capnp.NewEncoder(os.Stdout).Encode(msg)
 	if err != nil {
