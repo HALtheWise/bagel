@@ -69,8 +69,8 @@ struct FuncObj {
 struct DiskCache {
 	version @0 :Text; # Code version that populated this file
 	refs @1 :List(RefData); # Mapping from ref index to ref data
-	strings @2 :Data; # Blob storing strings data accessed through StringRefs
-	stringsSize @4 :UInt32; # Number of bytes of strings that have been filled
+	strings @2 :List(UInt8); # Blob storing strings data accessed through StringRefs
+	stringsUsed @4 :UInt32; # Number of bytes of strings that have been filled
 	funcs @3 :List(FuncObj); # Mapping from func index to func data
 }
 
