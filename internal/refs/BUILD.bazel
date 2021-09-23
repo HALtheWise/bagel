@@ -3,6 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "refs",
     srcs = ["refs.go"],
-    importpath = "github.com/HALtheWise/balez/internal/refs",
+    importpath = "github.com/HALtheWise/bales/internal/refs",
     visibility = ["//:__subpackages__"],
 )

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/HALtheWise/balez/internal/labels"
-	"github.com/HALtheWise/balez/internal/starlark_tasks"
-	"github.com/HALtheWise/balez/internal/task"
+	"github.com/HALtheWise/bales/internal/labels"
+	"github.com/HALtheWise/bales/internal/starlark_tasks"
+	"github.com/HALtheWise/bales/internal/task"
 )
 
 func main() {

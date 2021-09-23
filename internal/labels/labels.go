@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/HALtheWise/balez/internal/task"
+	"github.com/HALtheWise/bales/internal/task"
 )
 
 type Package struct {
@@ -22,7 +22,7 @@ var NullPackage = Package{"__NULL", ""}
 var NullLabel = Label{NullPackage, ""}
 
 var T_FindBuildFile = task.Task1("T_FindBuildFile", func(c *task.Context, pkg Package) Label {
-	for _, name := range []string{"BUILD.balez", "BUILD.bazel", "BUILD"} {
+	for _, name := range []string{"BUILD.bales", "BUILD.bazel", "BUILD"} {
 		l := Label{pkg, name}
 		if info, err := os.Stat(T_FilepathForLabel(c, l)); err == nil && info.Mode().IsRegular() {
 			return l

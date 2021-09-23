@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/HALtheWise/balez/internal/dcache/graph"
+	"github.com/HALtheWise/bales/internal/dcache/graph"
 	capnp "zombiezen.com/go/capnproto2"
 )
 

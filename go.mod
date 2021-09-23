@@ -1,4 +1,4 @@
-module github.com/HALtheWise/balez
+module github.com/HALtheWise/bales
 
 go 1.18
 
