@@ -59,7 +59,7 @@ struct RefData {
 }
 
 struct FuncObj {
-	kind @1 :UInt16; # Kind of function call, determined from initialization order.
+	kind @1 :UInt32; # Kind of function call, determined from initialization order. Could probably be UInt8
 	arg @0 :UInt32; # Index pointing into Refs table
 	dependencies @2 :List(UInt32); # List of indexes into the Funcs table
 	result @3 :AnyPointer; # Capnp object storing a *Result (see below). May be null if result is not stored in file cache.

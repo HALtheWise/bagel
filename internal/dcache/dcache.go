@@ -9,7 +9,25 @@ import (
 
 var version string
 
-func New(refsSize, funcsSize, stringsSize int32) graph.DiskCache {
+type refKey struct {
+	left, right uint32
+}
+
+type funcKey struct {
+	kind, arg uint32
+}
+
+type DCache struct {
+	graph.DiskCache
+
+	// TODO(eric): These maps are temporary, the intent is to replace them with a
+	// linear probing hashmap directly implemented on the capnp type.
+	refsIntern    map[refKey]uint32  // Maps refs to a ref index
+	stringsIntern map[string]uint32  // Maps strings to a ref index
+	funcsIntern   map[funcKey]uint32 // Maps funcs to func index
+}
+
+func New(refsSize, funcsSize, stringsSize int32) DCache {
 	// Make a brand new empty message.  A Message allocates Cap'n Proto structs.
 	_, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
 	if err != nil {
@@ -61,6 +79,8 @@ func New(refsSize, funcsSize, stringsSize int32) graph.DiskCache {
 	if err != nil {
 		panic(err)
 	}
+
+	return DCa
 
 	return cache
 }

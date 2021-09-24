@@ -49,6 +49,7 @@ https://github.com/golang/tools/blob/master/gopls/doc/advanced.md#working-with-g
 Fish:
 
 ```
+bazel build @com_zombiezen_go_capnproto2//capnpc-go
 begin
   set -lx PATH $PATH .bazel-bin/external/com_zombiezen_go_capnproto2/capnpc-go/capnpc-go_/
   capnp compile -ogo internal/dcache/graph/graph.capnp -I .bazel-bales/external/com_zombiezen_go_capnproto2/std/
