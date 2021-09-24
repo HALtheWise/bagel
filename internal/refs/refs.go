@@ -11,9 +11,9 @@ type data struct {
 type refKind uint32
 
 const (
-	KIND_STRING refKind = 1 // id is an offset into a separate strings storage system
-	KIND_DATA           = 2 // id is context-specific data (probably a uint30)
-	KIND_REF            = 3 // id is an offset into the refs table
+// KIND_STRING refKind = 1 // id is an offset into a separate strings storage system
+// KIND_DATA           = 2 // id is context-specific data (probably a uint30)
+// KIND_REF            = 3 // id is an offset into the refs table
 )
 
 const kindBits = 2

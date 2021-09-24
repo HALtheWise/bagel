@@ -56,6 +56,11 @@ $Go.import("github.com/HALtheWise/bagel/internal/dcache/graph");
 struct RefData {
 	left @0 :UInt32;
 	right @1 :UInt32;
+
+	const bitsForKind : UInt32 = 2;
+	const kindRef : UInt32 = 1;
+	const kindString : UInt32 = 2;
+	const kindData : UInt32 = 3;
 }
 
 struct FuncObj {
@@ -72,6 +77,10 @@ struct DiskCache {
 	strings @2 :List(UInt8); # Blob storing strings data accessed through StringRefs
 	stringsUsed @4 :UInt32; # Number of bytes of strings that have been filled
 	funcs @3 :List(FuncObj); # Mapping from func index to func data
+
+	# Temporary values until the in place hashmap works
+	numRefs @5 :UInt32;
+	numFuncs @6 :UInt32;
 }
 
 ## Cached result types for FuncObj

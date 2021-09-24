@@ -1,0 +1,9 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "refs2",
+    srcs = ["refs2.go"],
+    importpath = "github.com/HALtheWise/bagel/internal/refs2",
+    visibility = ["//:__subpackages__"],
+    deps = ["//internal/dcache:dcache_lib"],
+)
