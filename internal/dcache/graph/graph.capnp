@@ -1,9 +1,9 @@
 using Go = import "/go.capnp";
 @0x85d3acc39d94e0f8;
 $Go.package("graph");
-$Go.import("github.com/HALtheWise/bales/internal/dcache/graph");
+$Go.import("github.com/HALtheWise/bagel/internal/dcache/graph");
 
-# When bales is invoked:
+# When bagel is invoked:
 # - Increment the database epoch
 # 	- Get the list of changed files since the last epoch
 # 	- Store the token returned by the file watcher

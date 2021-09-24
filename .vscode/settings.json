@@ -1,6 +1,6 @@
 {
   "files.associations": {
-    "BUILD.bales": "bazel"
+    "BUILD.bagel": "bazel"
   },
   "go.alternateTools": {
     "go": "${workspaceRoot}/bazel-out/k8-fastbuild/bin/tools/go"

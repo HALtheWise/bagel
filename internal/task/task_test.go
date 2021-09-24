@@ -3,7 +3,7 @@ package task_test
 import (
 	"testing"
 
-	"github.com/HALtheWise/bales/internal/task"
+	"github.com/HALtheWise/bagel/internal/task"
 )
 
 var callCount = 0

@@ -3,7 +3,7 @@ package dcache
 import (
 	"os/exec"
 
-	"github.com/HALtheWise/bales/internal/dcache/graph"
+	"github.com/HALtheWise/bagel/internal/dcache/graph"
 	capnp "zombiezen.com/go/capnproto2"
 )
 

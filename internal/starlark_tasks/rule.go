@@ -3,7 +3,7 @@ package starlark_tasks
 import (
 	"fmt"
 
-	"github.com/HALtheWise/bales/internal/labels"
+	"github.com/HALtheWise/bagel/internal/labels"
 	"go.starlark.net/starlark"
 )
 

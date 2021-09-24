@@ -1,4 +1,4 @@
-module github.com/HALtheWise/bales
+module github.com/HALtheWise/bagel
 
 go 1.18
 

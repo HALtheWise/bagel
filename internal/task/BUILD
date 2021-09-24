@@ -7,7 +7,7 @@ go_library(
         "id.go",
         "task.go",
     ],
-    importpath = "github.com/HALtheWise/bales/internal/task",
+    importpath = "github.com/HALtheWise/bagel/internal/task",
     visibility = ["//:__subpackages__"],
 )
 

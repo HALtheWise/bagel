@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "dcache_lib",
     srcs = ["dcache.go"],
-    importpath = "github.com/HALtheWise/bales/internal/dcache",
+    importpath = "github.com/HALtheWise/bagel/internal/dcache",
     visibility = ["//visibility:private"],
     deps = [
         "//internal/dcache/graph",
