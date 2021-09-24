@@ -119,7 +119,9 @@ func New(refsSize, funcsSize, stringsSize int32) DCache {
 		panic(err)
 	}
 
-	return DCa
-
-	return cache
+	return DCache{
+		cache,
+		make(map[refKey]uint32),
+		make(map[funcKey]uint32),
+	}
 }

@@ -4,7 +4,7 @@ go_library(
     name = "dcache_lib",
     srcs = ["dcache.go"],
     importpath = "github.com/HALtheWise/bagel/internal/dcache",
-    visibility = ["//visibility:private"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "//internal/dcache/graph",
         "@com_zombiezen_go_capnproto2//:go_default_library",
