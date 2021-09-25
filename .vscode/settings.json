@@ -1,13 +1,13 @@
 {
-  "files.associations": {
-    "BUILD.bagel": "bazel"
-  },
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
   "go.alternateTools": {
-    "go": "${workspaceRoot}/bazel-out/k8-fastbuild/bin/tools/go"
+    "go": "${workspaceRoot}/tools/go.sh"
   },
-  "go.gopath": "${workspaceRoot}/.gopath",
   "go.toolsEnvVars": {
-    // "GOPACKAGESDRIVER": "${workspaceFolder}/tools/gopackagesdriver.sh"
+    "GOPACKAGESDRIVER": "${workspaceFolder}/tools/gopackagesdriver.sh",
+    "GOPACKAGESDRIVER_BAZEL_QUERY": "kind(go_binary, //...)",
   },
   "go.enableCodeLens": {
     "references": false,

@@ -1,4 +1,4 @@
-package refs2
+package refs
 
 import (
 	"github.com/HALtheWise/bagel/internal/dcache/graph"
