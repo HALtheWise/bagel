@@ -7,6 +7,17 @@ type StringRef struct {
 	offset uint32
 }
 
+func (r StringRef) pack() uint32 {
+	return r.offset<<graph.RefData_bitsForKind | graph.RefData_kindRef
+}
+
+func (r StringRef) unpack(data uint32) StringRef {
+	if data&KIND_MASK != graph.RefData_kindRef {
+		panic("wrong kind")
+	}
+	return StringRef{data >> graph.RefData_bitsForKind}
+}
+
 func (r StringRef) Get(c *GlobalContext) string {
 	refs, err := c.Cache.Refs()
 	if err != nil {

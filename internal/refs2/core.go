@@ -9,16 +9,18 @@ type GlobalContext struct {
 	Cache dcache.DCache
 
 	// Temporary until I get an in-place hash table working
-	// stringsIntern map[string]StringRef
+	stringsIntern map[string]StringRef
 }
 
-type packer interface {
+type packer[T packer[T]] interface {
 	pack() uint32
-	unpack(uint32) packer
+	unpack(uint32) T
 }
 
-const MAX_OFFSET = 1<<(32-graph.RefData_bitsForKind) - 1
-const KIND_MASK uint32 = 1<<graph.RefData_bitsForKind - 1
+const (
+	MAX_OFFSET        = 1<<(32-graph.RefData_bitsForKind) - 1
+	KIND_MASK  uint32 = 1<<graph.RefData_bitsForKind - 1
+)
 
 func fromPacked3[R packer[R]](v uint32) R {
 	var zero R

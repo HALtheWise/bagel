@@ -54,10 +54,3 @@ func InternPackage3(c *GlobalContext, workspace, path PackageRef3) PackageRef3 {
 	result.fillFromIntern(c, workspace, path)
 	return result
 }
-
-func xtest() {
-	r := InternPackage3(&GlobalContext{}, PackageRef3{}, PackageRef3{})
-	r.Get(&GlobalContext{})
-
-	// fromPacked[LabelRef](0)
-}

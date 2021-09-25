@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "core.go",
         "generics.go",
+        "strings.go",
     ],
     importpath = "github.com/HALtheWise/bagel/internal/refs2",
     visibility = ["//:__subpackages__"],

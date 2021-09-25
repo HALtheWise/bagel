@@ -7,7 +7,7 @@
   },
   "go.gopath": "${workspaceRoot}/.gopath",
   "go.toolsEnvVars": {
-    "GOPACKAGESDRIVER": "${workspaceFolder}/tools/gopackagesdriver.sh"
+    // "GOPACKAGESDRIVER": "${workspaceFolder}/tools/gopackagesdriver.sh"
   },
   "go.enableCodeLens": {
     "references": false,
@@ -18,9 +18,10 @@
       "-bazel-bin",
       "-bazel-out",
       "-bazel-testlogs",
-      "-bazel-mypkg",
+      "-bazel-bagel",
+      "-.gopath",
     ],
-    "formatting.gofumpt": true,
+    // "formatting.gofumpt": true,
     "formatting.local": "github.com/HALtheWise/bagel",
     "ui.completion.usePlaceholders": true,
     "ui.semanticTokens": true,
@@ -33,6 +34,15 @@
       "upgrade_dependency": false,
       "vendor": false
     },
+  },
+  "[go]": {
+    "editor.insertSpaces": false,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    // "editor.links": false,
   },
   "go.useLanguageServer": true,
   "go.buildOnSave": "off",
