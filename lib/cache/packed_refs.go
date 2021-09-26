@@ -10,7 +10,7 @@ const (
 )
 
 type Ref[T Ref[T]] interface {
-	pack() uint32
+	Pack() uint32
 	unpack(uint32) T
 }
 
@@ -37,7 +37,7 @@ func (r genRef3[L, R]) Get(c *GlobalCache) (L, R) {
 }
 
 func (r *genRef3[L, R]) fillFromIntern(c *GlobalCache, left L, right R) {
-	r.offset = c.InternRef(left.pack(), right.pack())
+	r.offset = c.InternRef(left.Pack(), right.Pack())
 }
 
 func (r *genRef3[_, _]) fillFromUnpack(data uint32) {
@@ -47,7 +47,7 @@ func (r *genRef3[_, _]) fillFromUnpack(data uint32) {
 	r.offset = data >> graph.RefData_bitsForKind
 }
 
-func (r genRef3[_, _]) pack() uint32 {
+func (r genRef3[_, _]) Pack() uint32 {
 	if r.offset > MAX_OFFSET {
 		panic("Offset too large")
 	}

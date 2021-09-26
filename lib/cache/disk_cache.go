@@ -40,10 +40,10 @@ func (d *GlobalCache) InternRef(left, right uint32) uint32 {
 	return addr
 }
 
-func (d *GlobalCache) InternFunc(kind, arg uint32) uint32 {
+func (d *GlobalCache) InternFunc(kind, arg uint32) (index uint32, created bool) {
 	key := funcKey{kind, arg}
 	if addr, ok := d.funcsIntern[key]; ok {
-		return addr
+		return addr, false
 	}
 
 	funcs, err := d.Funcs()
@@ -55,7 +55,7 @@ func (d *GlobalCache) InternFunc(kind, arg uint32) uint32 {
 	funcs.At(int(addr)).SetKind(kind)
 	funcs.At(int(addr)).SetArg(arg)
 	d.funcsIntern[key] = addr
-	return addr
+	return addr, true
 }
 
 func NewDiskCache(refsSize, funcsSize, stringsSize int32) graph.DiskCache {
@@ -73,10 +73,11 @@ func NewDiskCache(refsSize, funcsSize, stringsSize int32) graph.DiskCache {
 
 	if version == "" {
 		versionBytes, err := exec.Command("git", "rev-parse", "HEAD").Output()
-		if err != nil {
-			panic(err)
+		if err == nil {
+			version = string(versionBytes)
+		} else {
+			version = "Error: " + err.Error()
 		}
-		version = string(versionBytes)
 	}
 
 	cache.SetVersion(version)

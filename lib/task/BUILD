@@ -19,5 +19,10 @@ go_library(
 go_test(
     name = "task_test",
     srcs = ["task_test.go"],
-    deps = [":task"],
+    deps = [
+        ":task",
+        "//lib/cache",
+        "//lib/cache/graph",
+        "@com_zombiezen_go_capnproto2//:go_default_library",
+    ],
 )

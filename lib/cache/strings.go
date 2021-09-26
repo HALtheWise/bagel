@@ -9,7 +9,7 @@ type StringRef struct {
 	offset uint32
 }
 
-func (r StringRef) pack() uint32 {
+func (r StringRef) Pack() uint32 {
 	return r.offset<<graph.RefData_bitsForKind | graph.RefData_kindRef
 }
 
@@ -48,12 +48,17 @@ func InternString(c *GlobalCache, s string) StringRef {
 	if err != nil {
 		panic(err)
 	}
-	copy([]byte(s), string(strings.ToPtr().Data())[start:end])
+
+	data := strings.ToPtr().Data()
+	copy(data[start:end], []byte(s))
+	c.SetStringsUsed(end)
 
 	offset := c.InternRef(
 		start<<graph.RefData_bitsForKind+graph.RefData_kindString,
 		uint32(len(s))<<graph.RefData_bitsForKind+graph.RefData_kindData,
 	)
 
-	return StringRef{offset}
+	ref := StringRef{offset}
+	c.stringsIntern[s] = ref
+	return ref
 }

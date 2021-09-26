@@ -6,52 +6,47 @@ import (
 	"github.com/HALtheWise/bagel/lib/cache/graph"
 )
 
-type packer interface{ pack() uint32 }
+type packer interface{ Pack() uint32 }
 type diskResult interface {
 	ToPtr() capnp.Ptr
 	~struct{ capnp.Struct }
 }
 
 func getFuncData(ctx *globalContext, kind uint32, arg packer) (graph.FuncObj, uint32, bool) {
-	argPacked := arg.pack()
-	idx := ctx.cache.InternFunc(kind, argPacked)
-	funcs, err := ctx.cache.Funcs()
+	idx, created := ctx.Cache.InternFunc(kind, arg.Pack())
+	funcs, err := ctx.Cache.Funcs()
 	if err != nil {
 		panic(err)
 	}
 	data := funcs.At(int(idx))
-	if data.Kind() == kind {
-		return data, idx, true
-	}
-	data.SetKind(kind)
-	data.SetArg(argPacked)
-	return data, idx, false
+	return data, idx, created
 }
 
 func DiskTask[Arg packer, Result diskResult](name string, f func(*Context, Arg, *capnp.Segment) Result) func(*Context, Arg) Result {
 	kind := getNextID()
 	return func(parent *Context, arg Arg) Result {
-		funcData, _, ok := getFuncData(parent.global, kind, arg)
+		funcData, _, created := getFuncData(parent.Global, kind, arg)
 
-		if ok {
+		if !created {
 			// This data is already cached.
 			// TODO(eric): Check for invalidation
+			parent.Global.stats.cacheHits += 1
+
 			ptr, err := funcData.ResultPtr()
 			if err != nil {
 				panic(err)
 			}
 			result := struct{ capnp.Struct }{ptr.Struct()}
-			parent.global.stats.cacheHits += 1
 			return Result(result)
 		}
 
-		parent.global.stats.cacheMisses += 1
+		parent.Global.stats.cacheMisses += 1
 		ctx := Context{
 			name:   name,
-			global: parent.global,
+			Global: parent.Global,
 		}
 
-		result := f(&ctx, arg, parent.global.cache.Segment())
+		result := f(&ctx, arg, parent.Global.Cache.Segment())
 
 		// TODO(eric): Save called function refs
 		funcData.SetResultPtr(result.ToPtr())
@@ -62,26 +57,26 @@ func DiskTask[Arg packer, Result diskResult](name string, f func(*Context, Arg, 
 func GoTask[Arg packer, Result any](name string, f func(*Context, Arg) Result) func(*Context, Arg) Result {
 	kind := getNextID()
 	return func(parent *Context, arg Arg) Result {
-		_, idx, ok := getFuncData(parent.global, kind, arg)
+		_, idx, created := getFuncData(parent.Global, kind, arg)
 
-		if ok {
+		if !created {
 			// This function is in the disk cache
-			if memCache, ok := parent.global.cache.FuncExtraData[idx]; ok {
-				parent.global.stats.cacheHits += 1
+			if memCache, ok := parent.Global.Cache.FuncExtraData[idx]; ok {
+				parent.Global.stats.cacheHits += 1
 				return memCache.(Result)
 			}
 		}
 
-		parent.global.stats.cacheMisses += 1
+		parent.Global.stats.cacheMisses += 1
 
 		ctx := Context{
 			name:   name,
-			global: parent.global,
+			Global: parent.Global,
 		}
 
 		result := f(&ctx, arg)
 
-		parent.global.cache.FuncExtraData[idx] = result
+		parent.Global.Cache.FuncExtraData[idx] = result
 
 		return result
 	}

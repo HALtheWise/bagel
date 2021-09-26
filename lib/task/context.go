@@ -10,12 +10,12 @@ import (
 // TODO(HALtheWise): Consider using automatically assigned IDs instead of strings here
 type Context struct {
 	name   string
-	global *globalContext
+	Global *globalContext
 }
 
 type globalContext struct {
 	// Mapping from ID to typed memo table
-	cache cache.GlobalCache
+	Cache cache.GlobalCache
 	stats Stats
 }
 
@@ -24,7 +24,7 @@ type Stats struct {
 }
 
 func GetGlobalStats(c *Context) *Stats {
-	return &c.global.stats
+	return &c.Global.stats
 }
 
 func (g *Stats) String() string {
@@ -34,8 +34,8 @@ func (g *Stats) String() string {
 func Root() *Context {
 	return &Context{
 		name: "",
-		global: &globalContext{
-			cache: cache.NewGlobalCache(),
+		Global: &globalContext{
+			Cache: cache.NewGlobalCache(),
 		},
 	}
 }
