@@ -1,12 +1,16 @@
-package refs
+package cache
 
 import (
-	"github.com/HALtheWise/bagel/internal/dcache"
-	"github.com/HALtheWise/bagel/internal/dcache/graph"
+	"github.com/HALtheWise/bagel/internal/cache/graph"
 )
 
 type GlobalContext struct {
-	Cache dcache.DCache
+	graph.DiskCache
+
+	// TODO(eric): These maps are temporary, the intent is to replace them with a
+	// linear probing hashmap directly implemented on the capnp type.
+	refsIntern  map[refKey]uint32  // Maps refs to a ref index
+	funcsIntern map[funcKey]uint32 // Maps funcs to func index
 
 	// Temporary until I get an in-place hash table working
 	stringsIntern map[string]StringRef

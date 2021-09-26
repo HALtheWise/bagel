@@ -1,10 +1,10 @@
-package dcache_test
+package cache_test
 
 import (
 	"os"
 	"testing"
 
-	"github.com/HALtheWise/bagel/internal/dcache/graph"
+	"github.com/HALtheWise/bagel/internal/cache/graph"
 	capnp "zombiezen.com/go/capnproto2"
 )
 

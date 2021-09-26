@@ -1,6 +1,8 @@
-package refs
+package cache
 
-import "github.com/HALtheWise/bagel/internal/dcache/graph"
+import (
+	"github.com/HALtheWise/bagel/internal/cache/graph"
+)
 
 // A StringRef is a reference to an interned string
 type StringRef struct {
@@ -19,7 +21,7 @@ func (r StringRef) unpack(data uint32) StringRef {
 }
 
 func (r StringRef) Get(c *GlobalContext) string {
-	refs, err := c.Cache.Refs()
+	refs, err := c.Refs()
 	if err != nil {
 		panic(err)
 	}
@@ -28,7 +30,7 @@ func (r StringRef) Get(c *GlobalContext) string {
 	start := refData.Left() >> graph.RefData_bitsForKind
 	end := start + refData.Right()>>graph.RefData_bitsForKind
 
-	strings, err := c.Cache.Strings()
+	strings, err := c.Strings()
 	if err != nil {
 		panic(err)
 	}
@@ -40,15 +42,15 @@ func InternString(c *GlobalContext, s string) StringRef {
 		return ref
 	}
 
-	start := c.Cache.StringsUsed()
+	start := c.StringsUsed()
 	end := start + uint32(len(s))
-	strings, err := c.Cache.Strings()
+	strings, err := c.Strings()
 	if err != nil {
 		panic(err)
 	}
 	copy([]byte(s), string(strings.ToPtr().Data())[start:end])
 
-	offset := c.Cache.InternRef(
+	offset := c.InternRef(
 		start<<graph.RefData_bitsForKind+graph.RefData_kindString,
 		uint32(len(s))<<graph.RefData_bitsForKind+graph.RefData_kindData,
 	)

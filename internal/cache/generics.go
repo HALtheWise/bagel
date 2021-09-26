@@ -1,7 +1,7 @@
-package refs
+package cache
 
 import (
-	"github.com/HALtheWise/bagel/internal/dcache/graph"
+	"github.com/HALtheWise/bagel/internal/cache/graph"
 )
 
 // A genericRef helps implement useful helper functions for a Ref stored in the Refs array of the global context.
@@ -11,7 +11,7 @@ type genRef3[L packer[L], R packer[R]] struct {
 }
 
 func (r genRef3[L, R]) Get(c *GlobalContext) (L, R) {
-	refs, err := c.Cache.Refs()
+	refs, err := c.Refs()
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func (r genRef3[L, R]) Get(c *GlobalContext) (L, R) {
 }
 
 func (r *genRef3[L, R]) fillFromIntern(c *GlobalContext, left L, right R) {
-	r.offset = c.Cache.InternRef(left.pack(), right.pack())
+	r.offset = c.InternRef(left.pack(), right.pack())
 }
 
 func (r *genRef3[_, _]) fillFromUnpack(data uint32) {

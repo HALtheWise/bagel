@@ -1,10 +1,11 @@
-package dcache
+package cache
 
 import (
 	"os/exec"
 
-	"github.com/HALtheWise/bagel/internal/dcache/graph"
 	capnp "zombiezen.com/go/capnproto2"
+
+	"github.com/HALtheWise/bagel/internal/cache/graph"
 )
 
 var version string
@@ -17,18 +18,9 @@ type funcKey struct {
 	kind, arg uint32
 }
 
-type DCache struct {
-	graph.DiskCache
-
-	// TODO(eric): These maps are temporary, the intent is to replace them with a
-	// linear probing hashmap directly implemented on the capnp type.
-	refsIntern  map[refKey]uint32  // Maps refs to a ref index
-	funcsIntern map[funcKey]uint32 // Maps funcs to func index
-}
-
 // The Intern functions return the offset in the Addr or Funcs array containing a reference to the provided object.
 // If the object was already in the array, it will not be modified.
-func (d *DCache) InternRef(left, right uint32) uint32 {
+func (d *GlobalContext) InternRef(left, right uint32) uint32 {
 	key := refKey{left, right}
 	if addr, ok := d.refsIntern[key]; ok {
 		return addr
@@ -48,7 +40,7 @@ func (d *DCache) InternRef(left, right uint32) uint32 {
 	return addr
 }
 
-func (d *DCache) InternFunc(kind, arg uint32) uint32 {
+func (d *GlobalContext) InternFunc(kind, arg uint32) uint32 {
 	key := funcKey{kind, arg}
 	if addr, ok := d.funcsIntern[key]; ok {
 		return addr
@@ -66,7 +58,7 @@ func (d *DCache) InternFunc(kind, arg uint32) uint32 {
 	return addr
 }
 
-func New(refsSize, funcsSize, stringsSize int32) DCache {
+func NewDiskCache(refsSize, funcsSize, stringsSize int32) graph.DiskCache {
 	// Make a brand new empty message.  A Message allocates Cap'n Proto structs.
 	_, seg, err := capnp.NewMessage(capnp.SingleSegment(nil))
 	if err != nil {
@@ -119,9 +111,5 @@ func New(refsSize, funcsSize, stringsSize int32) DCache {
 		panic(err)
 	}
 
-	return DCache{
-		cache,
-		make(map[refKey]uint32),
-		make(map[funcKey]uint32),
-	}
+	return cache
 }

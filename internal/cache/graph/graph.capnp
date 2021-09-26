@@ -1,7 +1,7 @@
 using Go = import "/go.capnp";
 @0x85d3acc39d94e0f8;
 $Go.package("graph");
-$Go.import("github.com/HALtheWise/bagel/internal/dcache/graph");
+$Go.import("github.com/HALtheWise/bagel/internal/cache/graph");
 
 # When bagel is invoked:
 # - Increment the database epoch
@@ -24,7 +24,7 @@ $Go.import("github.com/HALtheWise/bagel/internal/dcache/graph");
 
 # Between every two expensive functions, need something with output value stored and at least hash of input
 	# Unless the two functions always get invalidated together anyway
-# Wherever possible, 
+# Wherever possible,
 
 # Leaves: T_FileStats, T_FileContentsInfo (Label:data -> Proto:data)
 # 	- GetFilepath/ReadFile() based on FileContents
@@ -47,7 +47,7 @@ $Go.import("github.com/HALtheWise/bagel/internal/dcache/graph");
 
 # For things that are weird Starlark objects but we want to cache (rule defs, providers, depsets, Args...)
 # 	- When the object is constructed, it gives itself an ID containing the (label, etc) of the active thread, and saves to a dict in thread-local storage
-# 	- Given an ID, you can _either_ 
+# 	- Given an ID, you can _either_
 #		- call a Task that gives a simplified Proto object with basic stuff
 # 		- call a Task that returns the full Starlark object (with lambdas and shit)
 # 	- The former can invoke the latter if something weird's going on

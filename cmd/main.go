@@ -7,10 +7,10 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/HALtheWise/bagel/internal/refs"
+	"github.com/HALtheWise/bagel/internal/cache"
 )
 
-var _ refs.GlobalContext
+var _ cache.GlobalContext
 
 func query(c *cli.Context) error {
 	if c.Bool("keep_going") {

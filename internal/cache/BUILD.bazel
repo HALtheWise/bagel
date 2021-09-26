@@ -1,21 +1,26 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "dcache_lib",
-    srcs = ["dcache.go"],
-    importpath = "github.com/HALtheWise/bagel/internal/dcache",
+    name = "cache",
+    srcs = [
+        "disk_cache.go",
+        "generics.go",
+        "global_context.go",
+        "strings.go",
+    ],
+    importpath = "github.com/HALtheWise/bagel/internal/cache",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//internal/dcache/graph",
+        "//internal/cache/graph",
         "@com_zombiezen_go_capnproto2//:go_default_library",
     ],
 )
 
 go_test(
-    name = "dcache_test",
+    name = "cache_test",
     srcs = ["disk_cache_example_test.go"],
     deps = [
-        "//internal/dcache/graph",
+        "//internal/cache/graph",
         "@com_zombiezen_go_capnproto2//:go_default_library",
     ],
 )
