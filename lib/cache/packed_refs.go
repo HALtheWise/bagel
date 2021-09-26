@@ -53,19 +53,3 @@ func (r genRef3[_, _]) Pack() uint32 {
 	}
 	return r.offset<<graph.RefData_bitsForKind | graph.RefData_kindRef
 }
-
-type PackageRef3 struct {
-	genRef3[PackageRef3, PackageRef3]
-}
-
-func (PackageRef3) unpack(data uint32) PackageRef3 {
-	var result PackageRef3
-	result.fillFromUnpack(data)
-	return result
-}
-
-func InternPackage3(c *GlobalCache, workspace, path PackageRef3) PackageRef3 {
-	var result PackageRef3
-	result.fillFromIntern(c, workspace, path)
-	return result
-}

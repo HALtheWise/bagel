@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "disk_cache.go",
         "global_context.go",
+        "leaf_refs.go",
         "packed_refs.go",
         "strings.go",
     ],
