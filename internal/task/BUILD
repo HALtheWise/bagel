@@ -9,6 +9,7 @@ go_library(
     ],
     importpath = "github.com/HALtheWise/bagel/internal/task",
     visibility = ["//:__subpackages__"],
+    deps = ["//internal/cache"],
 )
 
 go_test(

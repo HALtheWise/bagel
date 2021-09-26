@@ -4,29 +4,23 @@ import (
 	"github.com/HALtheWise/bagel/internal/cache/graph"
 )
 
-type GlobalContext struct {
+type GlobalCache struct {
 	graph.DiskCache
 
 	// TODO(eric): These maps are temporary, the intent is to replace them with a
 	// linear probing hashmap directly implemented on the capnp type.
-	refsIntern  map[refKey]uint32  // Maps refs to a ref index
-	funcsIntern map[funcKey]uint32 // Maps funcs to func index
-
-	// Temporary until I get an in-place hash table working
-	stringsIntern map[string]StringRef
+	refsIntern    map[refKey]uint32      // Maps refs to a ref index
+	funcsIntern   map[funcKey]uint32     // Maps funcs to func index
+	stringsIntern map[string]StringRef   // Maps string to ref index
+	funcExtraData map[uint32]interface{} // Return values from funcs that can't be serialized to disk
 }
 
-type packer[T packer[T]] interface {
-	pack() uint32
-	unpack(uint32) T
-}
-
-const (
-	MAX_OFFSET        = 1<<(32-graph.RefData_bitsForKind) - 1
-	KIND_MASK  uint32 = 1<<graph.RefData_bitsForKind - 1
-)
-
-func fromPacked3[R packer[R]](v uint32) R {
-	var zero R
-	return zero.unpack(v)
+func NewGlobalCache() GlobalCache {
+	return GlobalCache{
+		DiskCache:     NewDiskCache(128, 128, 2048),
+		refsIntern:    make(map[refKey]uint32),
+		funcsIntern:   make(map[funcKey]uint32),
+		stringsIntern: make(map[string]StringRef),
+		funcExtraData: make(map[uint32]interface{}),
+	}
 }

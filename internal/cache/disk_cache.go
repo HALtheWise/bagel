@@ -20,7 +20,7 @@ type funcKey struct {
 
 // The Intern functions return the offset in the Addr or Funcs array containing a reference to the provided object.
 // If the object was already in the array, it will not be modified.
-func (d *GlobalContext) InternRef(left, right uint32) uint32 {
+func (d *GlobalCache) InternRef(left, right uint32) uint32 {
 	key := refKey{left, right}
 	if addr, ok := d.refsIntern[key]; ok {
 		return addr
@@ -40,7 +40,7 @@ func (d *GlobalContext) InternRef(left, right uint32) uint32 {
 	return addr
 }
 
-func (d *GlobalContext) InternFunc(kind, arg uint32) uint32 {
+func (d *GlobalCache) InternFunc(kind, arg uint32) uint32 {
 	key := funcKey{kind, arg}
 	if addr, ok := d.funcsIntern[key]; ok {
 		return addr

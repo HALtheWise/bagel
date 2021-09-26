@@ -20,7 +20,7 @@ func (r StringRef) unpack(data uint32) StringRef {
 	return StringRef{data >> graph.RefData_bitsForKind}
 }
 
-func (r StringRef) Get(c *GlobalContext) string {
+func (r StringRef) Get(c *GlobalCache) string {
 	refs, err := c.Refs()
 	if err != nil {
 		panic(err)
@@ -37,7 +37,7 @@ func (r StringRef) Get(c *GlobalContext) string {
 	return string(strings.ToPtr().Data()[start:end])
 }
 
-func InternString(c *GlobalContext, s string) StringRef {
+func InternString(c *GlobalCache, s string) StringRef {
 	if ref, ok := c.stringsIntern[s]; ok {
 		return ref
 	}

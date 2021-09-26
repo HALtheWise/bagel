@@ -10,7 +10,7 @@ import (
 	"github.com/HALtheWise/bagel/internal/cache"
 )
 
-var _ cache.GlobalContext
+var _ cache.GlobalCache
 
 func query(c *cli.Context) error {
 	if c.Bool("keep_going") {

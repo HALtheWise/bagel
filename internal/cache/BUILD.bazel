@@ -4,8 +4,8 @@ go_library(
     name = "cache",
     srcs = [
         "disk_cache.go",
-        "generics.go",
         "global_context.go",
+        "packed_refs.go",
         "strings.go",
     ],
     importpath = "github.com/HALtheWise/bagel/internal/cache",

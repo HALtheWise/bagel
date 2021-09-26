@@ -4,13 +4,28 @@ import (
 	"github.com/HALtheWise/bagel/internal/cache/graph"
 )
 
+const (
+	MAX_OFFSET        = 1<<(32-graph.RefData_bitsForKind) - 1
+	KIND_MASK  uint32 = 1<<graph.RefData_bitsForKind - 1
+)
+
+type packer[T packer[T]] interface {
+	pack() uint32
+	unpack(uint32) T
+}
+
+func fromPacked3[R packer[R]](v uint32) R {
+	var zero R
+	return zero.unpack(v)
+}
+
 // A genericRef helps implement useful helper functions for a Ref stored in the Refs array of the global context.
 type genRef3[L packer[L], R packer[R]] struct {
 	// type genRef3[left any, right any, self is[genRef3[left, right, self]]] struct {
 	offset uint32
 }
 
-func (r genRef3[L, R]) Get(c *GlobalContext) (L, R) {
+func (r genRef3[L, R]) Get(c *GlobalCache) (L, R) {
 	refs, err := c.Refs()
 	if err != nil {
 		panic(err)
@@ -21,7 +36,7 @@ func (r genRef3[L, R]) Get(c *GlobalContext) (L, R) {
 		fromPacked3[R](refData.Right())
 }
 
-func (r *genRef3[L, R]) fillFromIntern(c *GlobalContext, left L, right R) {
+func (r *genRef3[L, R]) fillFromIntern(c *GlobalCache, left L, right R) {
 	r.offset = c.InternRef(left.pack(), right.pack())
 }
 
@@ -49,7 +64,7 @@ func (PackageRef3) unpack(data uint32) PackageRef3 {
 	return result
 }
 
-func InternPackage3(c *GlobalContext, workspace, path PackageRef3) PackageRef3 {
+func InternPackage3(c *GlobalCache, workspace, path PackageRef3) PackageRef3 {
 	var result PackageRef3
 	result.fillFromIntern(c, workspace, path)
 	return result

@@ -1,6 +1,10 @@
 package task
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/HALtheWise/bagel/internal/cache"
+)
 
 // TODO(HALtheWise): Include a context.Context in this
 // TODO(HALtheWise): Consider using automatically assigned IDs instead of strings here
@@ -11,19 +15,19 @@ type Context struct {
 
 type globalContext struct {
 	// Mapping from ID to typed memo table
-	memoTables []interface{}
-	stats      GlobalStats
+	cache cache.GlobalCache
+	stats Stats
 }
 
-type GlobalStats struct {
+type Stats struct {
 	cacheHits, cacheMisses int
 }
 
-func GetGlobalStats(c *Context) *GlobalStats {
+func GetGlobalStats(c *Context) *Stats {
 	return &c.global.stats
 }
 
-func (g *GlobalStats) String() string {
+func (g *Stats) String() string {
 	return fmt.Sprintf("Cache hits: %d ; Cache Misses: %d", g.cacheHits, g.cacheMisses)
 }
 
@@ -31,18 +35,18 @@ func Root() *Context {
 	return &Context{
 		name: "",
 		global: &globalContext{
-			memoTables: make([]interface{}, getMaxID()+1),
+			cache: cache.NewGlobalCache(),
 		},
 	}
 }
 
 func getTypedMemo[Arg comparable, Result any](g *globalContext, id int) map[Arg]Result {
-	if id >= len(g.memoTables) {
+	if id >= len(g.cache) {
 		newTable := make([]interface{}, id+1)
-		copy(newTable, g.memoTables)
-		g.memoTables = newTable
+		copy(newTable, g.cache)
+		g.cache = newTable
 	}
-	if memo := g.memoTables[id]; memo != nil {
+	if memo := g.cache[id]; memo != nil {
 		if typedMemo, ok := memo.(map[Arg]Result); ok {
 			return typedMemo
 		} else {
@@ -50,7 +54,7 @@ func getTypedMemo[Arg comparable, Result any](g *globalContext, id int) map[Arg]
 		}
 	} else {
 		typedMemo := make(map[Arg]Result)
-		g.memoTables[id] = typedMemo
+		g.cache[id] = typedMemo
 		return typedMemo
 	}
 }
