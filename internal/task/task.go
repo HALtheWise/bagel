@@ -1,14 +1,77 @@
 package task
 
-func Task1[Arg comparable, Result any](name string, f func(*Context, Arg) Result) func(*Context, Arg) Result {
-	id := getNextID()
-	return func(parent *Context, arg Arg) Result {
-		typedMemo := getTypedMemo[Arg, Result](parent.global, id)
+import (
+	capnp "zombiezen.com/go/capnproto2"
 
-		if cached, ok := typedMemo[arg]; ok {
+	"github.com/HALtheWise/bagel/internal/cache/graph"
+)
+
+type packer interface{ pack() uint32 }
+type diskResult interface {
+	ToPtr() capnp.Ptr
+	~struct{ capnp.Struct }
+}
+
+func getFuncData(ctx *globalContext, kind uint32, arg packer) (graph.FuncObj, uint32, bool) {
+	argPacked := arg.pack()
+	idx := ctx.cache.InternFunc(kind, argPacked)
+	funcs, err := ctx.cache.Funcs()
+	if err != nil {
+		panic(err)
+	}
+	data := funcs.At(int(idx))
+	if data.Kind() == kind {
+		return data, idx, true
+	}
+	data.SetKind(kind)
+	data.SetArg(argPacked)
+	return data, idx, false
+}
+
+func DiskTask[Arg packer, Result diskResult](name string, f func(*Context, Arg, *capnp.Segment) Result) func(*Context, Arg) Result {
+	kind := getNextID()
+	return func(parent *Context, arg Arg) Result {
+		funcData, _, ok := getFuncData(parent.global, kind, arg)
+
+		if ok {
+			// This data is already cached.
+			// TODO(eric): Check for invalidation
+			ptr, err := funcData.ResultPtr()
+			if err != nil {
+				panic(err)
+			}
+			result := struct{ capnp.Struct }{ptr.Struct()}
 			parent.global.stats.cacheHits += 1
-			return cached
+			return Result(result)
 		}
+
+		parent.global.stats.cacheMisses += 1
+		ctx := Context{
+			name:   name,
+			global: parent.global,
+		}
+
+		result := f(&ctx, arg, parent.global.cache.Segment())
+
+		// TODO(eric): Save called function refs
+		funcData.SetResultPtr(result.ToPtr())
+		return result
+	}
+}
+
+func GoTask[Arg packer, Result any](name string, f func(*Context, Arg) Result) func(*Context, Arg) Result {
+	kind := getNextID()
+	return func(parent *Context, arg Arg) Result {
+		_, idx, ok := getFuncData(parent.global, kind, arg)
+
+		if ok {
+			// This function is in the disk cache
+			if memCache, ok := parent.global.cache.FuncExtraData[idx]; ok {
+				parent.global.stats.cacheHits += 1
+				return memCache.(Result)
+			}
+		}
+
 		parent.global.stats.cacheMisses += 1
 
 		ctx := Context{
@@ -18,67 +81,7 @@ func Task1[Arg comparable, Result any](name string, f func(*Context, Arg) Result
 
 		result := f(&ctx, arg)
 
-		typedMemo[arg] = result
-
-		return result
-	}
-}
-
-type ManyArgs[Arg1, Arg2, Arg3 comparable] struct {
-	arg1 Arg1
-	arg2 Arg2
-	arg3 Arg3
-}
-
-func Task2[Arg1, Arg2 comparable, Result any](
-	name string, f func(*Context, Arg1, Arg2) Result,
-) func(*Context, Arg1, Arg2) Result {
-	id := getNextID()
-	return func(parent *Context, arg1 Arg1, arg2 Arg2) Result {
-		typedMemo := getTypedMemo[ManyArgs[Arg1, Arg2, struct{}], Result](parent.global, id)
-		args := ManyArgs[Arg1, Arg2, struct{}]{arg1, arg2, struct{}{}}
-
-		if cached, ok := typedMemo[args]; ok {
-			parent.global.stats.cacheHits += 1
-			return cached
-		}
-		parent.global.stats.cacheMisses += 1
-
-		ctx := Context{
-			name:   name,
-			global: parent.global,
-		}
-
-		result := f(&ctx, arg1, arg2)
-
-		typedMemo[args] = result
-
-		return result
-	}
-}
-
-func Task3[Arg1, Arg2, Arg3 comparable, Result any](
-	name string, f func(*Context, Arg1, Arg2, Arg3) Result,
-) func(*Context, Arg1, Arg2, Arg3) Result {
-	id := getNextID()
-	return func(parent *Context, arg1 Arg1, arg2 Arg2, arg3 Arg3) Result {
-		typedMemo := getTypedMemo[ManyArgs[Arg1, Arg2, Arg3], Result](parent.global, id)
-		args := ManyArgs[Arg1, Arg2, Arg3]{arg1, arg2, arg3}
-
-		if cached, ok := typedMemo[args]; ok {
-			parent.global.stats.cacheHits += 1
-			return cached
-		}
-		parent.global.stats.cacheMisses += 1
-
-		ctx := Context{
-			name:   name,
-			global: parent.global,
-		}
-
-		result := f(&ctx, arg1, arg2, arg3)
-
-		typedMemo[args] = result
+		parent.global.cache.FuncExtraData[idx] = result
 
 		return result
 	}

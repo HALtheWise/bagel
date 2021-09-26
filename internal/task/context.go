@@ -39,22 +39,3 @@ func Root() *Context {
 		},
 	}
 }
-
-func getTypedMemo[Arg comparable, Result any](g *globalContext, id int) map[Arg]Result {
-	if id >= len(g.cache) {
-		newTable := make([]interface{}, id+1)
-		copy(newTable, g.cache)
-		g.cache = newTable
-	}
-	if memo := g.cache[id]; memo != nil {
-		if typedMemo, ok := memo.(map[Arg]Result); ok {
-			return typedMemo
-		} else {
-			panic(fmt.Errorf("ID %d reused by multiple tasks with different types, %T, %T", id, typedMemo, memo))
-		}
-	} else {
-		typedMemo := make(map[Arg]Result)
-		g.cache[id] = typedMemo
-		return typedMemo
-	}
-}

@@ -1,18 +1,21 @@
 package task
 
-var namesToID = make(map[string]int)
-var maxID = -1
+var namesToID = make(map[string]uint32)
 
-func getNextID() int {
+const INVALID_ID uint32 = 0
+
+var maxID = INVALID_ID
+
+func getNextID() uint32 {
 	maxID += 1
 	return maxID
 }
 
-func getMaxID() int {
+func getMaxID() uint32 {
 	return maxID
 }
 
-func idForName(name string) int {
+func idForName(name string) uint32 {
 	if id, ok := namesToID[name]; ok {
 		return id
 	}

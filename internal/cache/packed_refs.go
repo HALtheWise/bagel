@@ -9,18 +9,18 @@ const (
 	KIND_MASK  uint32 = 1<<graph.RefData_bitsForKind - 1
 )
 
-type packer[T packer[T]] interface {
+type Ref[T Ref[T]] interface {
 	pack() uint32
 	unpack(uint32) T
 }
 
-func fromPacked3[R packer[R]](v uint32) R {
+func fromPacked3[R Ref[R]](v uint32) R {
 	var zero R
 	return zero.unpack(v)
 }
 
 // A genericRef helps implement useful helper functions for a Ref stored in the Refs array of the global context.
-type genRef3[L packer[L], R packer[R]] struct {
+type genRef3[L Ref[L], R Ref[R]] struct {
 	// type genRef3[left any, right any, self is[genRef3[left, right, self]]] struct {
 	offset uint32
 }

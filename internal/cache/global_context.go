@@ -12,7 +12,7 @@ type GlobalCache struct {
 	refsIntern    map[refKey]uint32      // Maps refs to a ref index
 	funcsIntern   map[funcKey]uint32     // Maps funcs to func index
 	stringsIntern map[string]StringRef   // Maps string to ref index
-	funcExtraData map[uint32]interface{} // Return values from funcs that can't be serialized to disk
+	FuncExtraData map[uint32]interface{} // Return values from funcs that can't be serialized to disk
 }
 
 func NewGlobalCache() GlobalCache {
@@ -21,6 +21,6 @@ func NewGlobalCache() GlobalCache {
 		refsIntern:    make(map[refKey]uint32),
 		funcsIntern:   make(map[funcKey]uint32),
 		stringsIntern: make(map[string]StringRef),
-		funcExtraData: make(map[uint32]interface{}),
+		FuncExtraData: make(map[uint32]interface{}),
 	}
 }

@@ -9,7 +9,11 @@ go_library(
     ],
     importpath = "github.com/HALtheWise/bagel/internal/task",
     visibility = ["//:__subpackages__"],
-    deps = ["//internal/cache"],
+    deps = [
+        "//internal/cache",
+        "//internal/cache/graph",
+        "@com_zombiezen_go_capnproto2//:go_default_library",
+    ],
 )
 
 go_test(
