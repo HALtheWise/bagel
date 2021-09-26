@@ -3,9 +3,10 @@ package starlark_tasks
 import (
 	"fmt"
 
-	"github.com/HALtheWise/bagel/internal/labels"
-	"github.com/HALtheWise/bagel/internal/task"
 	"go.starlark.net/starlark"
+
+	"github.com/HALtheWise/bagel/lib/labels"
+	"github.com/HALtheWise/bagel/lib/task"
 )
 
 type EvaluatedRule struct {

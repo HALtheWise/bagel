@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/HALtheWise/bagel/internal/task"
+	"github.com/HALtheWise/bagel/lib/task"
 )
 
 type Package struct {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/HALtheWise/bagel/internal/cache"
+	"github.com/HALtheWise/bagel/lib/cache"
 )
 
 var _ cache.GlobalCache

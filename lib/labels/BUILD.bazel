@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "labels",
     srcs = ["labels.go"],
-    importpath = "github.com/HALtheWise/bagel/internal/labels",
+    importpath = "github.com/HALtheWise/bagel/lib/labels",
     visibility = ["//:__subpackages__"],
-    deps = ["//internal/task"],
+    deps = ["//lib/task"],
 )

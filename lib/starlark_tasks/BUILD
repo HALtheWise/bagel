@@ -13,11 +13,11 @@ go_library(
         "read_file.go",
         "rule.go",
     ],
-    importpath = "github.com/HALtheWise/bagel/internal/starlark_tasks",
+    importpath = "github.com/HALtheWise/bagel/lib/starlark_tasks",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//internal/labels",
-        "//internal/task",
+        "//lib/labels",
+        "//lib/task",
         "@net_starlark_go//starlark",
     ],
 )

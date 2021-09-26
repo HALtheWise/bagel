@@ -3,7 +3,7 @@ package task
 import (
 	capnp "zombiezen.com/go/capnproto2"
 
-	"github.com/HALtheWise/bagel/internal/cache/graph"
+	"github.com/HALtheWise/bagel/lib/cache/graph"
 )
 
 type packer interface{ pack() uint32 }

@@ -54,7 +54,7 @@ Fish:
 bazel build @com_zombiezen_go_capnproto2//capnpc-go
 begin
   set -lx PATH $PATH .bazel-bin/external/com_zombiezen_go_capnproto2/capnpc-go/capnpc-go_/
-  capnp compile -ogo internal/cache/graph/graph.capnp -I .bazel-bagel/external/com_zombiezen_go_capnproto2/std/
+  capnp compile -ogo lib/cache/graph/graph.capnp -I .bazel-bagel/external/com_zombiezen_go_capnproto2/std/
 end
 ```
 

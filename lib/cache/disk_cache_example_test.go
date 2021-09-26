@@ -4,8 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/HALtheWise/bagel/internal/cache/graph"
 	capnp "zombiezen.com/go/capnproto2"
+
+	"github.com/HALtheWise/bagel/lib/cache/graph"
 )
 
 func TestWrite(t *testing.T) {

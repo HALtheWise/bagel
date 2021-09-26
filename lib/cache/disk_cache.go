@@ -5,7 +5,7 @@ import (
 
 	capnp "zombiezen.com/go/capnproto2"
 
-	"github.com/HALtheWise/bagel/internal/cache/graph"
+	"github.com/HALtheWise/bagel/lib/cache/graph"
 )
 
 var version string

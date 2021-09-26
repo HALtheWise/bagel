@@ -3,7 +3,7 @@ package task
 import (
 	"fmt"
 
-	"github.com/HALtheWise/bagel/internal/cache"
+	"github.com/HALtheWise/bagel/lib/cache"
 )
 
 // TODO(HALtheWise): Include a context.Context in this

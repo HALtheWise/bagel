@@ -1,20 +1,20 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
-    name = "internal_lib",
+    name = "lib_lib",
     srcs = ["main.go"],
-    importpath = "github.com/HALtheWise/bagel/internal",
+    importpath = "github.com/HALtheWise/bagel/lib",
     visibility = ["//visibility:private"],
     deps = [
-        "//internal/labels",
-        "//internal/starlark_tasks",
-        "//internal/task",
+        "//lib/labels",
+        "//lib/starlark_tasks",
+        "//lib/task",
     ],
 )
 
 go_binary(
-    name = "internal",
-    embed = [":internal_lib"],
+    name = "lib",
+    embed = [":lib_lib"],
     visibility = ["//:__subpackages__"],
 )
 

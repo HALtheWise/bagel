@@ -3,8 +3,9 @@ package starlark_tasks
 import (
 	"fmt"
 
-	"github.com/HALtheWise/bagel/internal/labels"
 	"go.starlark.net/starlark"
+
+	"github.com/HALtheWise/bagel/lib/labels"
 )
 
 var _ starlark.Callable = &BzlRule{}
@@ -46,7 +47,7 @@ func (r *BzlRule) Name() string {
 	}
 }
 
-func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func (r *BzlRule) Calllib(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var name string
 
 	if err := starlark.UnpackArgs(r.Name(), args, kwargs, "name", &name); err != nil {

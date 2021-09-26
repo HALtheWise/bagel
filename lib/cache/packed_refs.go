@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/HALtheWise/bagel/internal/cache/graph"
+	"github.com/HALtheWise/bagel/lib/cache/graph"
 )
 
 const (

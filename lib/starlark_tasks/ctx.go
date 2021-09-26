@@ -1,8 +1,9 @@
 package starlark_tasks
 
 import (
-	"github.com/HALtheWise/bagel/internal/labels"
 	"go.starlark.net/starlark"
+
+	"github.com/HALtheWise/bagel/lib/labels"
 )
 
 // https://docs.bazel.build/versions/main/skylark/lib/Label.html

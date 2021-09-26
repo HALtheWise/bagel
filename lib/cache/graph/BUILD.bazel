@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "graph",
     srcs = ["graph.capnp.go"],
-    importpath = "github.com/HALtheWise/bagel/internal/cache/graph",
+    importpath = "github.com/HALtheWise/bagel/lib/cache/graph",
     visibility = ["//:__subpackages__"],
     deps = [
         "@com_zombiezen_go_capnproto2//:go_default_library",

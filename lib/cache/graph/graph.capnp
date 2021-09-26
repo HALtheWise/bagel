@@ -1,7 +1,7 @@
 using Go = import "/go.capnp";
 @0x85d3acc39d94e0f8;
 $Go.package("graph");
-$Go.import("github.com/HALtheWise/bagel/internal/cache/graph");
+$Go.import("github.com/HALtheWise/bagel/lib/cache/graph");
 
 # When bagel is invoked:
 # - Increment the database epoch

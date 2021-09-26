@@ -1,8 +1,9 @@
 package starlark_tasks
 
 import (
-	"github.com/HALtheWise/bagel/internal/labels"
 	"go.starlark.net/starlark"
+
+	"github.com/HALtheWise/bagel/lib/labels"
 )
 
 func actionDeclareFile(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
