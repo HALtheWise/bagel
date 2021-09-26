@@ -3,12 +3,12 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # Go
 http_archive(
     name = "io_bazel_rules_go",
-    # sha256 = "983e495889ae0ca210f9a3f99647c57c9c2ea9f90bbaaca024956a17fff0e30b",
-    # strip_prefix = "rules_go-9f77676a87f23c7d5963bb9aef91f07398706809",
-    sha256 = "8e968b5fcea1d2d64071872b12737bbb5514524ee5f0a4f54f5920266c261acb",
+    sha256 = "983e495889ae0ca210f9a3f99647c57c9c2ea9f90bbaaca024956a17fff0e30b",
+    strip_prefix = "rules_go-9f77676a87f23c7d5963bb9aef91f07398706809",
+    # sha256 = "8e968b5fcea1d2d64071872b12737bbb5514524ee5f0a4f54f5920266c261acb",
     urls = [
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.28.0/rules_go-v0.28.0.zip",
-        # "https://github.com/bazelbuild/rules_go/archive/9f77676a87f23c7d5963bb9aef91f07398706809.zip"
+        # "https://github.com/bazelbuild/rules_go/releases/download/v0.28.0/rules_go-v0.28.0.zip",
+        "https://github.com/bazelbuild/rules_go/archive/9f77676a87f23c7d5963bb9aef91f07398706809.zip",
     ],
 )
 
