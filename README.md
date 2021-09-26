@@ -43,6 +43,7 @@ Instead of an explicit graph representation, just stick with memoized function c
 ### Setup
 
 Developed against go commit `c894b442d1e5e150ad33fa3ce13dbfab1c037b3a`
+Later commits break `go_test()`, see https://github.com/bazelbuild/rules_go/issues/2964
 https://github.com/golang/tools/blob/master/gopls/doc/advanced.md#working-with-generic-code
 
 `sudo apt install capnproto`
