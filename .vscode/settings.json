@@ -9,6 +9,7 @@
     "GOPACKAGESDRIVER": "${workspaceFolder}/tools/gopackagesdriver.sh",
     "GOPACKAGESDRIVER_BAZEL_QUERY": "kind(go_binary, //...) + kind(go_test, //...)",
   },
+  "go.toolsGopath": "${workspaceFolder}/.gopath",
   "go.enableCodeLens": {
     "references": false,
     "runtest": false
