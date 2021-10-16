@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "task2",
+    srcs = [
+        "context.go",
+        "generic_refs.go",
+        "refs.go",
+    ],
+    importpath = "github.com/HALtheWise/bagel/lib/task2",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "task2_test",
+    srcs = ["refs_test.go"],
+    deps = [":task2"],
+)
