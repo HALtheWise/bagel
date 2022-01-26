@@ -1,4 +1,4 @@
-package metagraph
+package core
 
 type internKey interface{ ~uint32 }
 
@@ -8,7 +8,7 @@ type InternTable[K internKey, V comparable] struct {
 	mapping map[V]K
 }
 
-func (i *InternTable[K, V]) Insert(c *Context, value V) K {
+func (i *InternTable[K, V]) Insert(c *C, value V) K {
 	if len(i.data) == 0 {
 		i.mapping = make(map[V]K)
 	}
@@ -25,7 +25,7 @@ func (i *InternTable[K, V]) Insert(c *Context, value V) K {
 	return key
 }
 
-func (i *InternTable[K, V]) Get(c *Context, key K) V {
+func (i *InternTable[K, V]) Get(c *C, key K) V {
 	if key >= K(len(i.data)) {
 		panic("Key too large")
 	}

@@ -1,17 +1,17 @@
-package metagraph_test
+package core_test
 
 import (
 	"testing"
 
-	"github.com/HALtheWise/bagel/lib/metagraph"
+	"github.com/HALtheWise/bagel/lib/core"
 )
 
 type X1 uint32
 
 func TestInterning(t *testing.T) {
-	var table1 metagraph.InternTable[X1, string]
+	var table1 core.InternTable[X1, string]
 
-	c := metagraph.NewContext()
+	c := core.NewContext()
 
 	cat := table1.Insert(c, "cat")
 	dog := table1.Insert(c, "dog")

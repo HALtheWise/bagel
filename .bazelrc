@@ -1,1 +1,2 @@
-build --symlink_prefix=/
+build --experimental_convenience_symlinks=ignore
+test --test_output=errors
