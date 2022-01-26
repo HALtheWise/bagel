@@ -1,4 +1,4 @@
-package starlark_tasks
+package loading
 
 import (
 	"go.starlark.net/starlark"
@@ -24,7 +24,7 @@ func init() {
 	T_EvalStarlark = core.Task1("T_EvalStarlark",
 		func(c *core.Context, file refs.LabelRef) StarlarkFileResults {
 			label := refs.LabelTable.Get(c, file)
-			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: loadFunc(c, label.Pkg)}
+			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: LoadFunc(c, label.Pkg)}
 
 			ruleNames := map[string]*BzlRule{}
 			thread.SetLocal("rules", ruleNames)
@@ -62,7 +62,7 @@ var T_RuleInfoUnconfigured = core.Task1("T_RuleInfoUnconfigured", func(c *core.C
 	return parsed.rules[l.Name.Get(c)]
 })
 
-func loadFunc(c *core.Context, from refs.StringRef) func(*starlark.Thread, string) (starlark.StringDict, error) {
+func LoadFunc(c *core.Context, from refs.StringRef) func(*starlark.Thread, string) (starlark.StringDict, error) {
 	return func(_ *starlark.Thread, module string) (starlark.StringDict, error) {
 		result := T_EvalStarlark(c, refs.ParseRelativeLabel(c, module, from))
 		return result.globals, nil

@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/HALtheWise/bagel/lib/analysis"
 	"github.com/HALtheWise/bagel/lib/core"
+	"github.com/HALtheWise/bagel/lib/loading"
 	"github.com/HALtheWise/bagel/lib/refs"
-	"github.com/HALtheWise/bagel/lib/starlark_tasks"
 )
 
 func main() {
@@ -20,9 +21,9 @@ func main() {
 
 	fmt.Println(label)
 
-	info := starlark_tasks.T_RuleInfoUnconfigured(c, label)
+	info := loading.T_RuleInfoUnconfigured(c, label)
 	fmt.Println(info.Impl)
 
-	rule := starlark_tasks.T_RuleInfoEvaluated(c, label)
+	rule := analysis.T_RuleInfoEvaluated(c, label)
 	fmt.Println(rule.Providers)
 }

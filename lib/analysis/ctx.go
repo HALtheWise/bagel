@@ -1,4 +1,4 @@
-package starlark_tasks
+package analysis
 
 import (
 	"go.starlark.net/starlark"

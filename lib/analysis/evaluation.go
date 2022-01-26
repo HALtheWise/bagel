@@ -1,4 +1,4 @@
-package starlark_tasks
+package analysis
 
 import (
 	"fmt"
@@ -6,12 +6,13 @@ import (
 	"go.starlark.net/starlark"
 
 	"github.com/HALtheWise/bagel/lib/core"
+	"github.com/HALtheWise/bagel/lib/loading"
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
 type EvaluatedRule struct {
 	Name, Kind refs.StringRef
-	Providers  []*Provider
+	Providers  []*loading.Provider
 }
 
 func (c *EvaluatedRule) String() string {
@@ -21,12 +22,12 @@ func (c *EvaluatedRule) String() string {
 var T_RuleInfoEvaluated = core.Task1("T_RuleInfoEvaluated", func(c *core.Context, label refs.LabelRef) *EvaluatedRule {
 	label_v := label.Get(c)
 
-	unconfigured := T_RuleInfoUnconfigured(c, label)
+	unconfigured := loading.T_RuleInfoUnconfigured(c, label)
 	if unconfigured == nil {
 		return nil
 	}
 
-	thread := &starlark.Thread{Name: "Rule evaluation thread: " + label.String(), Load: loadFunc(c, label_v.Pkg)}
+	thread := &starlark.Thread{Name: "Rule evaluation thread: " + label.String(), Load: loading.LoadFunc(c, label_v.Pkg)}
 	bzlResult, err := starlark.Call(thread, unconfigured.Impl, starlark.Tuple{
 		&BzlCtx{BzlLabel{label: label, frozen: false, ctx: c}, c}, // ctx
 	}, []starlark.Tuple{})
@@ -34,11 +35,11 @@ var T_RuleInfoEvaluated = core.Task1("T_RuleInfoEvaluated", func(c *core.Context
 		panic(err)
 	}
 
-	var providers []*Provider
+	var providers []*loading.Provider
 
 	if seq, ok := bzlResult.(starlark.Indexable); ok {
 		for i := 0; i < seq.Len(); i++ {
-			providers = append(providers, seq.Index(i).(*Provider))
+			providers = append(providers, seq.Index(i).(*loading.Provider))
 		}
 	}
 
