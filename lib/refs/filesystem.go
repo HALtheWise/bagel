@@ -7,13 +7,13 @@ import (
 	"github.com/HALtheWise/bagel/lib/core"
 )
 
-var T_FilepathForLabel = core.MemoFunc1("T_FilepathForLabel",
+var T_FilepathForLabel = core.Task1("T_FilepathForLabel",
 	func(c *core.Context, label LabelRef) string {
 		unpacked := label.Get(c)
 		return filepath.Join(unpacked.Pkg.Get(c), unpacked.Name.Get(c))
 	})
 
-var T_FindBuildFile = core.MemoFunc1("T_FindBuildFile",
+var T_FindBuildFile = core.Task1("T_FindBuildFile",
 	func(c *core.Context, pkg StringRef) LabelRef {
 		dir := pkg.Get(c)
 		for _, buildfile := range []string{"BUILD.bagel", "BUILD.bazel", "BUILD"} {

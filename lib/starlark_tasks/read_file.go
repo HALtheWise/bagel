@@ -21,7 +21,7 @@ var predeclared = starlark.StringDict{
 var T_EvalStarlark func(c *core.Context, file refs.LabelRef) StarlarkFileResults
 
 func init() {
-	T_EvalStarlark = core.MemoFunc1("T_EvalStarlark",
+	T_EvalStarlark = core.Task1("T_EvalStarlark",
 		func(c *core.Context, file refs.LabelRef) StarlarkFileResults {
 			label := refs.LabelTable.Get(c, file)
 			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: loadFunc(c, label.Pkg)}
@@ -51,7 +51,7 @@ func init() {
 		})
 }
 
-var T_RuleInfoUnconfigured = core.MemoFunc1("T_RuleInfoUnconfigured", func(c *core.Context, l_r refs.LabelRef) *BzlRule {
+var T_RuleInfoUnconfigured = core.Task1("T_RuleInfoUnconfigured", func(c *core.Context, l_r refs.LabelRef) *BzlRule {
 	l := l_r.Get(c)
 	buildfile := refs.T_FindBuildFile(c, l.Pkg)
 	if buildfile == core.INVALID {

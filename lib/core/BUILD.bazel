@@ -5,7 +5,7 @@ go_library(
     srcs = [
         "context.go",
         "interning.go",
-        "memfunc.go",
+        "task.go",
     ],
     importpath = "github.com/HALtheWise/bagel/lib/core",
     visibility = ["//visibility:public"],
@@ -15,7 +15,7 @@ go_test(
     name = "core_test",
     srcs = [
         "interning_test.go",
-        "memfunc_test.go",
+        "task_test.go",
     ],
     deps = [":core"],
 )

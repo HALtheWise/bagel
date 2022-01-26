@@ -18,7 +18,7 @@ func (c *EvaluatedRule) String() string {
 	return fmt.Sprintf("%s{\"%s\", provides:%s}", c.Kind, c.Name, c.Providers)
 }
 
-var T_RuleInfoEvaluated = core.MemoFunc1("T_RuleInfoEvaluated", func(c *core.Context, label refs.LabelRef) *EvaluatedRule {
+var T_RuleInfoEvaluated = core.Task1("T_RuleInfoEvaluated", func(c *core.Context, label refs.LabelRef) *EvaluatedRule {
 	label_v := label.Get(c)
 
 	unconfigured := T_RuleInfoUnconfigured(c, label)

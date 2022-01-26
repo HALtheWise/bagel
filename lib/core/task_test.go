@@ -14,7 +14,7 @@ var StringInterner core.InternTable[StringRef, string]
 func TestHello(t *testing.T) {
 	executions := 0
 
-	hello := core.MemoFunc1("hello",
+	hello := core.Task1("hello",
 		func(c *core.Context, name StringRef) string {
 			executions++
 			return fmt.Sprintf("Hello %s", StringInterner.Get(c, name))
@@ -48,7 +48,7 @@ func TestFib(t *testing.T) {
 	executions := 0
 
 	var fib func(*core.Context, uint32) int
-	fib = core.MemoFunc1("fib", func(c *core.Context, a uint32) int {
+	fib = core.Task1("fib", func(c *core.Context, a uint32) int {
 		executions++
 		if a <= 2 {
 			return 1
@@ -71,7 +71,7 @@ func TestExpand(t *testing.T) {
 	executions := 0
 
 	var expand func(*core.Context, StringRef, uint32) string
-	expand = core.MemoFunc2("expand",
+	expand = core.Task2("expand",
 		func(c *core.Context, name StringRef, depth uint32) string {
 			executions++
 			if depth == 0 {
