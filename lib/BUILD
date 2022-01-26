@@ -6,8 +6,8 @@ go_library(
     importpath = "github.com/HALtheWise/bagel/lib",
     visibility = ["//visibility:private"],
     deps = [
-        "//lib/starlark_tasks",
-        "@com_github_halthewise_bagel//lib/task:go_default_library",
+        "//lib/core",
+        "//lib/refs",
     ],
 )
 
@@ -16,8 +16,3 @@ go_binary(
     embed = [":lib_lib"],
     visibility = ["//:__subpackages__"],
 )
-
-print({
-    go_binary: 1,
-    # "ac".startswith: 2,
-})
