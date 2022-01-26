@@ -1,8 +1,6 @@
 package analysis
 
 import (
-	"fmt"
-
 	"go.starlark.net/starlark"
 
 	"github.com/HALtheWise/bagel/lib/core"
@@ -13,10 +11,7 @@ import (
 type AnalyzedTarget struct {
 	Name, Kind refs.StringRef
 	Providers  []*loading.Provider
-}
-
-func (c *AnalyzedTarget) String() string {
-	return fmt.Sprintf("%s{\"%s\", provides:%s}", c.Kind, c.Name, c.Providers)
+	Actions    []*Action
 }
 
 var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label refs.LabelRef) *AnalyzedTarget {
@@ -43,9 +38,12 @@ var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label 
 		}
 	}
 
+	actions := thread.Local(kActionsKey).([]*Action)
+
 	return &AnalyzedTarget{
 		Kind:      refs.StringTable.Insert(c, unconfigured.Rule.Kind),
 		Name:      label_v.Name,
 		Providers: providers,
+		Actions:   actions,
 	}
 })

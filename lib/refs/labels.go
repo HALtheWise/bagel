@@ -31,13 +31,13 @@ func (r LabelRef) Get(c *core.Context) Label {
 func (r StringRef) String() string {
 	c := core.DefaultContext
 	val := StringTable.Get(c, r)
-	return fmt.Sprintf("ref(%s)", val)
+	return fmt.Sprintf(`r"%s"`, val)
 }
 
 func (r LabelRef) String() string {
 	c := core.DefaultContext
 	val := LabelTable.Get(c, r)
-	return fmt.Sprintf("ref(%+v)", val)
+	return fmt.Sprintf("r%+v", val)
 }
 
 func (l Label) String() string {

@@ -6,6 +6,8 @@ import (
 	"go.starlark.net/starlark"
 )
 
+const kActionsKey = "__actions__"
+
 type BzlActions struct {
 	ctx *BzlCtx
 }
@@ -62,8 +64,8 @@ func registerAction(thread *starlark.Thread, action *Action) error {
 		output.producer = action
 	}
 
-	actions, _ := thread.Local("actions").([]*Action)
-	thread.SetLocal("actions", append(actions, action))
+	actions, _ := thread.Local(kActionsKey).([]*Action)
+	thread.SetLocal(kActionsKey, append(actions, action))
 
 	return nil
 }

@@ -25,5 +25,5 @@ func main() {
 	fmt.Printf("%+v  (%v)\n", loaded, loaded.Rule.Impl)
 
 	analyzed := analysis.T_AnalyzeTarget(c, label)
-	fmt.Println(analyzed.Providers)
+	fmt.Printf("%+v", analyzed)
 }
