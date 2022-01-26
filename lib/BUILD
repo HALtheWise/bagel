@@ -8,6 +8,7 @@ go_library(
     deps = [
         "//lib/core",
         "//lib/refs",
+        "//lib/starlark_tasks",
     ],
 )
 

@@ -12,6 +12,10 @@ type StringRef uint32
 
 var StringTable core.InternTable[StringRef, string]
 
+func (r StringRef) Get(c *core.Context) string {
+	return StringTable.Get(c, r)
+}
+
 type LabelRef uint32
 type Label struct {
 	Pkg  StringRef
@@ -19,6 +23,10 @@ type Label struct {
 }
 
 var LabelTable core.InternTable[LabelRef, Label]
+
+func (r LabelRef) Get(c *core.Context) Label {
+	return LabelTable.Get(c, r)
+}
 
 func (r StringRef) String() string {
 	c := core.DefaultContext
@@ -37,16 +45,23 @@ func (l Label) String() string {
 	return fmt.Sprintf("//%s:%s", StringTable.Get(c, l.Pkg), StringTable.Get(c, l.Name))
 }
 
-func ParseLabel(c *core.C, label string) (LabelRef, error) {
+func ParseLabel(c *core.Context, label string) LabelRef {
 	if !strings.HasPrefix(label, "//") {
-		return 0, fmt.Errorf("Unable to parse %+v", label)
+		return core.INVALID
 	}
 	pkg, name, ok := strings.Cut(label[2:], ":")
 	if !ok {
-		return 0, fmt.Errorf("Unable to parse %+v", label)
+		return core.INVALID
 	}
 	return LabelTable.Insert(c, Label{
 		StringTable.Insert(c, pkg),
 		StringTable.Insert(c, name),
-	}), nil
+	})
+}
+
+func ParseRelativeLabel(c *core.Context, label string, from StringRef) LabelRef {
+	if !strings.HasPrefix(label, ":") {
+		return LabelTable.Insert(c, Label{from, StringTable.Insert(c, label[1:])})
+	}
+	return ParseLabel(c, label)
 }

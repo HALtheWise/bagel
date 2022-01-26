@@ -16,5 +16,4 @@ go_test(
     name = "task2_test",
     srcs = ["refs_test.go"],
     tags = ["manual"],
-    deps = ["@com_github_halthewise_bagel//lib/task2:go_default_library"],
 )

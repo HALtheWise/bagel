@@ -3,12 +3,14 @@ package starlark_tasks
 import (
 	"go.starlark.net/starlark"
 
-	"github.com/HALtheWise/bagel/lib/labels"
+	"github.com/HALtheWise/bagel/lib/core"
+	"github.com/HALtheWise/bagel/lib/refs"
 )
 
 // https://docs.bazel.build/versions/main/skylark/lib/Label.html
 type BzlLabel struct {
-	label  labels.Label
+	ctx    *core.Context
+	label  refs.LabelRef
 	frozen bool
 }
 
@@ -19,11 +21,11 @@ func (l *BzlLabel) AttrNames() []string {
 func (l *BzlLabel) Attr(name string) (starlark.Value, error) {
 	switch name {
 	case "name":
-		return starlark.String(l.label.Name), nil
+		return starlark.String(l.label.Get(l.ctx).Name.Get(l.ctx)), nil
 	case "package":
-		return starlark.String(l.label.Pkg), nil
+		return starlark.String(l.label.Get(l.ctx).Pkg.Get(l.ctx)), nil
 	case "workspace_name":
-		return starlark.String(l.label.Repo), nil
+		return starlark.String("workspaces_not_implemented"), nil
 	}
 	return nil, nil
 }
@@ -37,6 +39,7 @@ func (l *BzlLabel) Hash() (uint32, error) { return starlark.String(l.String()).H
 // https://docs.bazel.build/versions/main/skylark/lib/ctx.html
 type BzlCtx struct {
 	label BzlLabel
+	ctx   *core.Context
 }
 
 func (c *BzlCtx) AttrNames() []string {

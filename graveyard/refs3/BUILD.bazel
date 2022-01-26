@@ -13,5 +13,4 @@ go_library(
 go_test(
     name = "refs3_test",
     srcs = ["basic_test.go"],
-    deps = ["@com_github_halthewise_bagel//lib/refs3:go_default_library"],
 )

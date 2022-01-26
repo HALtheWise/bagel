@@ -2,3 +2,4 @@
 
 # gazelle:exclude .gopath/
 # gazelle:exclude .bazel*/
+# gazelle:exclude graveyard/

@@ -2,20 +2,20 @@ package core
 
 import "fmt"
 
-type C struct {
+type Context struct {
 	hits, misses int
 }
 
 // DefaultContext should only be used for debug printing, and must not affect the output of the build
-var DefaultContext *C
+var DefaultContext *Context
 
-func NewContext() *C {
-	c := &C{}
+func NewContext() *Context {
+	c := &Context{}
 	DefaultContext = c
 
 	return c
 }
 
-func (c *C) String() string {
+func (c *Context) String() string {
 	return fmt.Sprintf("ctx{hits=%d misses=%d}", c.hits, c.misses)
 }

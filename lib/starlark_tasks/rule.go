@@ -5,7 +5,7 @@ import (
 
 	"go.starlark.net/starlark"
 
-	"github.com/HALtheWise/bagel/lib/labels"
+	"github.com/HALtheWise/bagel/lib/refs"
 )
 
 var _ starlark.Callable = &BzlRule{}
@@ -15,7 +15,7 @@ type Attr struct {
 }
 
 type BzlRule struct {
-	DefinedIn labels.Label
+	DefinedIn refs.LabelRef
 	Kind      string
 	Impl      starlark.Callable
 	Attrs     map[string]Attr
@@ -47,7 +47,7 @@ func (r *BzlRule) Name() string {
 	}
 }
 
-func (r *BzlRule) Calllib(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var name string
 
 	if err := starlark.UnpackArgs(r.Name(), args, kwargs, "name", &name); err != nil {

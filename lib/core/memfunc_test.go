@@ -15,7 +15,7 @@ func TestHello(t *testing.T) {
 	executions := 0
 
 	hello := core.MemoFunc1("hello",
-		func(c *core.C, name StringRef) string {
+		func(c *core.Context, name StringRef) string {
 			executions++
 			return fmt.Sprintf("Hello %s", StringInterner.Get(c, name))
 		})
@@ -47,8 +47,8 @@ func TestHello(t *testing.T) {
 func TestFib(t *testing.T) {
 	executions := 0
 
-	var fib func(*core.C, uint32) int
-	fib = core.MemoFunc1("fib", func(c *core.C, a uint32) int {
+	var fib func(*core.Context, uint32) int
+	fib = core.MemoFunc1("fib", func(c *core.Context, a uint32) int {
 		executions++
 		if a <= 2 {
 			return 1
@@ -70,9 +70,9 @@ func TestFib(t *testing.T) {
 func TestExpand(t *testing.T) {
 	executions := 0
 
-	var expand func(*core.C, StringRef, uint32) string
+	var expand func(*core.Context, StringRef, uint32) string
 	expand = core.MemoFunc2("expand",
-		func(c *core.C, name StringRef, depth uint32) string {
+		func(c *core.Context, name StringRef, depth uint32) string {
 			executions++
 			if depth == 0 {
 				return StringInterner.Get(c, name)

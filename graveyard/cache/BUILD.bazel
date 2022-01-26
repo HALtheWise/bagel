@@ -11,17 +11,11 @@ go_library(
     ],
     importpath = "github.com/HALtheWise/bagel/graveyard/cache",
     visibility = ["//:__subpackages__"],
-    deps = [
-        "@com_github_halthewise_bagel//lib/cache/graph:go_default_library",
-        "@com_zombiezen_go_capnproto2//:go_default_library",
-    ],
+    deps = ["@com_zombiezen_go_capnproto2//:go_default_library"],
 )
 
 go_test(
     name = "cache_test",
     srcs = ["disk_cache_example_test.go"],
-    deps = [
-        "@com_github_halthewise_bagel//lib/cache/graph:go_default_library",
-        "@com_zombiezen_go_capnproto2//:go_default_library",
-    ],
+    deps = ["@com_zombiezen_go_capnproto2//:go_default_library"],
 )

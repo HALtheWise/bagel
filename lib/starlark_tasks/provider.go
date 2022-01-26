@@ -30,7 +30,7 @@ func (p *MetaProvider) Truth() starlark.Bool  { return true }
 func (p *MetaProvider) Hash() (uint32, error) { return starlark.String(p.name).Hash() }
 func (p *MetaProvider) Name() string          { return p.name }
 
-func (p *MetaProvider) Calllib(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func (p *MetaProvider) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	if len(args) != 0 {
 		return nil, fmt.Errorf("%s does not take positional args", p.Name())
 	}

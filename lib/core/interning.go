@@ -2,13 +2,15 @@ package core
 
 type internKey interface{ ~uint32 }
 
-// TODO(eric): Change this to require a pointer to the GlobalCache
+const INVALID = 1<<32 - 1
+
+// TODO(eric): Change this to store data in the Context
 type InternTable[K internKey, V comparable] struct {
 	data    []V
 	mapping map[V]K
 }
 
-func (i *InternTable[K, V]) Insert(c *C, value V) K {
+func (i *InternTable[K, V]) Insert(c *Context, value V) K {
 	if len(i.data) == 0 {
 		i.mapping = make(map[V]K)
 	}
@@ -25,9 +27,12 @@ func (i *InternTable[K, V]) Insert(c *C, value V) K {
 	return key
 }
 
-func (i *InternTable[K, V]) Get(c *C, key K) V {
+func (i *InternTable[K, V]) Get(c *Context, key K) V {
 	if key >= K(len(i.data)) {
 		panic("Key too large")
+	}
+	if key == INVALID {
+		panic("INVALID key")
 	}
 	return i.data[key]
 }

@@ -3,12 +3,9 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "cmd_lib",
     srcs = ["main.go"],
-    importpath = "github.com/HALtheWise/bagel/cmd",
+    importpath = "github.com/HALtheWise/bagel/graveyard/cmd",
     visibility = ["//visibility:private"],
-    deps = [
-        "@com_github_halthewise_bagel//lib/cache:go_default_library",
-        "@com_github_urfave_cli_v2//:cli",
-    ],
+    deps = ["@com_github_urfave_cli_v2//:cli"],
 )
 
 go_binary(

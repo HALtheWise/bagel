@@ -3,8 +3,8 @@ package starlark_tasks
 import (
 	"go.starlark.net/starlark"
 
-	"github.com/HALtheWise/bagel/lib/labels"
-	"github.com/HALtheWise/bagel/lib/task"
+	"github.com/HALtheWise/bagel/lib/core"
+	"github.com/HALtheWise/bagel/lib/refs"
 )
 
 type StarlarkFileResults struct {
@@ -18,18 +18,19 @@ var predeclared = starlark.StringDict{
 	"DefaultInfo": NewBuiltinProvider("DefaultInfo"),
 }
 
-var T_EvalStarlark func(c *task.Context, file labels.Label) StarlarkFileResults
+var T_EvalStarlark func(c *core.Context, file refs.LabelRef) StarlarkFileResults
 
 func init() {
-	T_EvalStarlark = task.Task1("T_EvalStarlark",
-		func(c *task.Context, file labels.Label) StarlarkFileResults {
-			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: loadFunc(c, file.Package)}
+	T_EvalStarlark = core.MemoFunc1("T_EvalStarlark",
+		func(c *core.Context, file refs.LabelRef) StarlarkFileResults {
+			label := refs.LabelTable.Get(c, file)
+			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: loadFunc(c, label.Pkg)}
 
 			ruleNames := map[string]*BzlRule{}
 			thread.SetLocal("rules", ruleNames)
 			thread.SetLocal("label", file)
 
-			globals, err := starlark.ExecFile(thread, labels.T_FilepathForLabel(c, file), nil, predeclared)
+			globals, err := starlark.ExecFile(thread, refs.T_FilepathForLabel(c, file), nil, predeclared)
 			if err != nil {
 				panic(err)
 			}
@@ -50,19 +51,20 @@ func init() {
 		})
 }
 
-var T_RuleInfoUnconfigured = task.Task1("T_RuleInfoUnconfigured", func(c *task.Context, l labels.Label) *BzlRule {
-	buildfile := labels.T_FindBuildFile(c, l.Package)
-	if buildfile == labels.NullLabel {
+var T_RuleInfoUnconfigured = core.MemoFunc1("T_RuleInfoUnconfigured", func(c *core.Context, l_r refs.LabelRef) *BzlRule {
+	l := l_r.Get(c)
+	buildfile := refs.T_FindBuildFile(c, l.Pkg)
+	if buildfile == core.INVALID {
 		return nil
 	}
 
 	parsed := T_EvalStarlark(c, buildfile)
-	return parsed.rules[l.Name]
+	return parsed.rules[l.Name.Get(c)]
 })
 
-func loadFunc(c *task.Context, from labels.Package) func(*starlark.Thread, string) (starlark.StringDict, error) {
+func loadFunc(c *core.Context, from refs.StringRef) func(*starlark.Thread, string) (starlark.StringDict, error) {
 	return func(_ *starlark.Thread, module string) (starlark.StringDict, error) {
-		result := T_EvalStarlark(c, labels.ParseRelativeLabel(module, from))
+		result := T_EvalStarlark(c, refs.ParseRelativeLabel(c, module, from))
 		return result.globals, nil
 	}
 }
@@ -74,7 +76,7 @@ func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlar
 	}
 
 	rule := &BzlRule{
-		DefinedIn: thread.Local("label").(labels.Label),
+		DefinedIn: thread.Local("label").(refs.LabelRef),
 		Kind:      "",
 		Impl:      impl,
 		Attrs:     nil,
