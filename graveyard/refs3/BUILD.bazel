@@ -6,12 +6,12 @@ go_library(
         "atom.go",
         "cache.go",
     ],
-    importpath = "github.com/HALtheWise/bagel/lib/refs3",
+    importpath = "github.com/HALtheWise/bagel/graveyard/refs3",
     visibility = ["//visibility:public"],
 )
 
 go_test(
     name = "refs3_test",
     srcs = ["basic_test.go"],
-    deps = [":refs3"],
+    deps = ["@com_github_halthewise_bagel//lib/refs3:go_default_library"],
 )

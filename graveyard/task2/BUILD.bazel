@@ -7,7 +7,7 @@ go_library(
         "generic_refs.go",
         "refs.go",
     ],
-    importpath = "github.com/HALtheWise/bagel/lib/task2",
+    importpath = "github.com/HALtheWise/bagel/graveyard/task2",
     tags = ["manual"],
     visibility = ["//visibility:public"],
 )
@@ -16,5 +16,5 @@ go_test(
     name = "task2_test",
     srcs = ["refs_test.go"],
     tags = ["manual"],
-    deps = [":task2"],
+    deps = ["@com_github_halthewise_bagel//lib/task2:go_default_library"],
 )

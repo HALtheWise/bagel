@@ -7,7 +7,7 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "//lib/starlark_tasks",
-        "//lib/task",
+        "@com_github_halthewise_bagel//lib/task:go_default_library",
     ],
 )
 

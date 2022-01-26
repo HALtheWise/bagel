@@ -16,7 +16,7 @@ go_library(
     importpath = "github.com/HALtheWise/bagel/lib/starlark_tasks",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//lib/task",
+        "@com_github_halthewise_bagel//lib/task:go_default_library",
         "@net_starlark_go//starlark",
     ],
 )
