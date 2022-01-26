@@ -8,11 +8,13 @@ go_library(
         "refs.go",
     ],
     importpath = "github.com/HALtheWise/bagel/lib/task2",
+    tags = ["manual"],
     visibility = ["//visibility:public"],
 )
 
 go_test(
     name = "task2_test",
     srcs = ["refs_test.go"],
+    tags = ["manual"],
     deps = [":task2"],
 )

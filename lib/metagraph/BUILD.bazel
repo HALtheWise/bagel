@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "metagraph",
+    srcs = [
+        "context.go",
+        "interning.go",
+        "memfunc.go",
+    ],
+    importpath = "github.com/HALtheWise/bagel/lib/metagraph",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "metagraph_test",
+    srcs = ["interning_test.go"],
+    deps = [":metagraph"],
+)
