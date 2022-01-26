@@ -10,16 +10,16 @@ import (
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
-type EvaluatedRule struct {
+type AnalyzedRule struct {
 	Name, Kind refs.StringRef
 	Providers  []*loading.Provider
 }
 
-func (c *EvaluatedRule) String() string {
+func (c *AnalyzedRule) String() string {
 	return fmt.Sprintf("%s{\"%s\", provides:%s}", c.Kind, c.Name, c.Providers)
 }
 
-var T_RuleInfoEvaluated = core.Task1("T_RuleInfoEvaluated", func(c *core.Context, label refs.LabelRef) *EvaluatedRule {
+var T_AnalyzeRule = core.Task1("T_AnalyzeRule", func(c *core.Context, label refs.LabelRef) *AnalyzedRule {
 	label_v := label.Get(c)
 
 	unconfigured := loading.T_RuleInfoUnconfigured(c, label)
@@ -43,7 +43,7 @@ var T_RuleInfoEvaluated = core.Task1("T_RuleInfoEvaluated", func(c *core.Context
 		}
 	}
 
-	return &EvaluatedRule{
+	return &AnalyzedRule{
 		Kind:      refs.StringTable.Insert(c, unconfigured.Kind),
 		Name:      label_v.Name,
 		Providers: providers,

@@ -24,6 +24,6 @@ func main() {
 	info := loading.T_RuleInfoUnconfigured(c, label)
 	fmt.Println(info.Impl)
 
-	rule := analysis.T_RuleInfoEvaluated(c, label)
+	rule := analysis.T_AnalyzeRule(c, label)
 	fmt.Println(rule.Providers)
 }

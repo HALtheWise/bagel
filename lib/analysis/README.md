@@ -6,4 +6,4 @@
 
 ## Private tasks
 
-- T_RuleConfigure (clabel) -> ConfiguredRule(providers, actions, files)
+- T_AnalyzeRule (clabel) -> AnalyzedRule(providers, actions, files)
