@@ -47,10 +47,12 @@ func (l Label) String() string {
 
 func ParseLabel(c *core.Context, label string) LabelRef {
 	if !strings.HasPrefix(label, "//") {
+		panic("No //: " + label)
 		return core.INVALID
 	}
 	pkg, name, ok := strings.Cut(label[2:], ":")
 	if !ok {
+		panic("no : " + label)
 		return core.INVALID
 	}
 	return LabelTable.Insert(c, Label{
@@ -60,7 +62,7 @@ func ParseLabel(c *core.Context, label string) LabelRef {
 }
 
 func ParseRelativeLabel(c *core.Context, label string, from StringRef) LabelRef {
-	if !strings.HasPrefix(label, ":") {
+	if strings.HasPrefix(label, ":") {
 		return LabelTable.Insert(c, Label{from, StringTable.Insert(c, label[1:])})
 	}
 	return ParseLabel(c, label)

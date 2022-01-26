@@ -21,5 +21,8 @@ func main() {
 	fmt.Println(label)
 
 	info := starlark_tasks.T_RuleInfoUnconfigured(c, label)
-	fmt.Println(info.Attrs)
+	fmt.Println(info.Impl)
+
+	rule := starlark_tasks.T_RuleInfoEvaluated(c, label)
+	fmt.Println(rule.Providers)
 }

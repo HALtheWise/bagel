@@ -32,7 +32,7 @@ type File struct {
 
 func (f *File) String() string {
 	val := f.path.Get(f.ctx)
-	return fmt.Sprintf("File(//{}:{})", val.Pkg.Get(f.ctx), val.Name.Get(f.ctx))
+	return fmt.Sprintf("File(//%s:%s)", val.Pkg.Get(f.ctx), val.Name.Get(f.ctx))
 }
 func (f *File) Type() string          { return "file" }
 func (f *File) Freeze()               {}

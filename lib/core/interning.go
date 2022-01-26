@@ -28,11 +28,11 @@ func (i *InternTable[K, V]) Insert(c *Context, value V) K {
 }
 
 func (i *InternTable[K, V]) Get(c *Context, key K) V {
-	if key >= K(len(i.data)) {
-		panic("Key too large")
-	}
 	if key == INVALID {
 		panic("INVALID key")
+	}
+	if key >= K(len(i.data)) {
+		panic("Key too large")
 	}
 	return i.data[key]
 }
