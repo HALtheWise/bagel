@@ -8,6 +8,8 @@ import (
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
+const kTargetsKey = "__targets__"
+
 var _ starlark.Callable = &BzlRule{}
 
 type Attr struct {
@@ -54,7 +56,7 @@ func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwa
 		return nil, err
 	}
 
-	rules := thread.Local("rules").(map[string]*BzlRule)
-	rules[name] = r
+	rules := thread.Local(kTargetsKey).(map[string]*Target)
+	rules[name] = &Target{r, args, kwargs}
 	return starlark.None, nil
 }

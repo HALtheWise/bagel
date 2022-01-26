@@ -10,25 +10,25 @@ import (
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
-type AnalyzedRule struct {
+type AnalyzedTarget struct {
 	Name, Kind refs.StringRef
 	Providers  []*loading.Provider
 }
 
-func (c *AnalyzedRule) String() string {
+func (c *AnalyzedTarget) String() string {
 	return fmt.Sprintf("%s{\"%s\", provides:%s}", c.Kind, c.Name, c.Providers)
 }
 
-var T_AnalyzeRule = core.Task1("T_AnalyzeRule", func(c *core.Context, label refs.LabelRef) *AnalyzedRule {
+var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label refs.LabelRef) *AnalyzedTarget {
 	label_v := label.Get(c)
 
-	unconfigured := loading.T_RuleInfoUnconfigured(c, label)
+	unconfigured := loading.T_LoadTarget(c, label)
 	if unconfigured == nil {
 		return nil
 	}
 
 	thread := &starlark.Thread{Name: "Rule evaluation thread: " + label.String(), Load: loading.LoadFunc(c, label_v.Pkg)}
-	bzlResult, err := starlark.Call(thread, unconfigured.Impl, starlark.Tuple{
+	bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{
 		&BzlCtx{BzlLabel{label: label, frozen: false, ctx: c}, c}, // ctx
 	}, []starlark.Tuple{})
 	if err != nil {
@@ -43,8 +43,8 @@ var T_AnalyzeRule = core.Task1("T_AnalyzeRule", func(c *core.Context, label refs
 		}
 	}
 
-	return &AnalyzedRule{
-		Kind:      refs.StringTable.Insert(c, unconfigured.Kind),
+	return &AnalyzedTarget{
+		Kind:      refs.StringTable.Insert(c, unconfigured.Rule.Kind),
 		Name:      label_v.Name,
 		Providers: providers,
 	}

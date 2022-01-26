@@ -7,9 +7,15 @@ import (
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
+type Target struct {
+	Rule   *BzlRule
+	Args   starlark.Tuple
+	Kwargs []starlark.Tuple
+}
+
 type StarlarkFileResults struct {
 	globals starlark.StringDict
-	rules   map[string]*BzlRule
+	targets map[string]*Target
 }
 
 var predeclared = starlark.StringDict{
@@ -26,8 +32,8 @@ func init() {
 			label := refs.LabelTable.Get(c, file)
 			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: LoadFunc(c, label.Pkg)}
 
-			ruleNames := map[string]*BzlRule{}
-			thread.SetLocal("rules", ruleNames)
+			targets := map[string]*Target{}
+			thread.SetLocal(kTargetsKey, targets)
 			thread.SetLocal("label", file)
 
 			globals, err := starlark.ExecFile(thread, refs.T_FilepathForLabel(c, file), nil, predeclared)
@@ -47,11 +53,11 @@ func init() {
 				v.Freeze()
 			}
 
-			return StarlarkFileResults{globals, ruleNames}
+			return StarlarkFileResults{globals, targets}
 		})
 }
 
-var T_RuleInfoUnconfigured = core.Task1("T_RuleInfoUnconfigured", func(c *core.Context, l_r refs.LabelRef) *BzlRule {
+var T_LoadTarget = core.Task1("T_LoadTarget", func(c *core.Context, l_r refs.LabelRef) *Target {
 	l := l_r.Get(c)
 	buildfile := refs.T_FindBuildFile(c, l.Pkg)
 	if buildfile == core.INVALID {
@@ -59,7 +65,7 @@ var T_RuleInfoUnconfigured = core.Task1("T_RuleInfoUnconfigured", func(c *core.C
 	}
 
 	parsed := T_EvalStarlark(c, buildfile)
-	return parsed.rules[l.Name.Get(c)]
+	return parsed.targets[l.Name.Get(c)]
 })
 
 func LoadFunc(c *core.Context, from refs.StringRef) func(*starlark.Thread, string) (starlark.StringDict, error) {

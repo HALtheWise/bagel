@@ -21,9 +21,9 @@ func main() {
 
 	fmt.Println(label)
 
-	info := loading.T_RuleInfoUnconfigured(c, label)
-	fmt.Println(info.Impl)
+	loaded := loading.T_LoadTarget(c, label)
+	fmt.Printf("%+v  (%v)\n", loaded, loaded.Rule.Impl)
 
-	rule := analysis.T_AnalyzeRule(c, label)
-	fmt.Println(rule.Providers)
+	analyzed := analysis.T_AnalyzeTarget(c, label)
+	fmt.Println(analyzed.Providers)
 }

@@ -5,9 +5,9 @@ go_library(
     srcs = [
         "bzlDepset.go",
         "bzlProvider.go",
+        "bzlRule.go",
         "bzlStruct.go",
-        "read_file.go",
-        "rule.go",
+        "tasks.go",
     ],
     importpath = "github.com/HALtheWise/bagel/lib/loading",
     visibility = ["//visibility:public"],
