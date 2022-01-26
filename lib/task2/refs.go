@@ -26,6 +26,14 @@ type StringRef struct {
 	ref anyRef
 }
 
+func (s StringRef) toRef() anyRef {
+	return s.ref
+}
+
+func (s StringRef) fromRef(r anyRef) StringRef {
+	return StringRef{r}
+}
+
 func (s StringRef) Lookup(c *Context) string {
 	if DEBUG_ASSERTS && s.ref == INVALID_REF {
 		panic(0)

@@ -1,13 +1,20 @@
 package task2
 
-type baseRef = struct{ ref anyRef }
-
-type GenericRef interface {
-	~baseRef
+type GenericRef[T GenericRef[T]] interface {
+	toRef() anyRef
+	fromRef(anyRef) T
 }
 
-type CompositeRef[L, R GenericRef] struct {
+type CompositeRef[L GenericRef[L], R GenericRef[R]] struct {
 	ref anyRef
+}
+
+func (r CompositeRef[L, R]) toRef() anyRef {
+	return r.ref
+}
+
+func (r CompositeRef[L, R]) fromRef(ref anyRef) CompositeRef[L, R] {
+	return CompositeRef[L, R]{ref}
 }
 
 func (ref CompositeRef[L, R]) Lookup(c *Context) (L, R) {
