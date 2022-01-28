@@ -54,7 +54,7 @@ func actionWrite(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tu
 	write := &Action{
 		kind:          WRITE,
 		inputs:        nil,
-		outputs:       []refs.CFileRef{output.ref},
+		outputs:       []refs.CFileRef{output.Ref},
 		is_executable: is_executable,
 		writeContent:  content,
 	}

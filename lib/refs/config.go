@@ -82,12 +82,12 @@ func (r CFileRef) String() string { return fmt.Sprintf("r%+v", r.Get(core.Defaul
 
 func (f CFile) String() string {
 	c := core.DefaultContext
-	return fmt.Sprintf("file(%s, %s)", f.Location.Get(c), f.Source.Get(c))
+	return fmt.Sprintf("File(%s, %s)", f.Location.Get(c), f.Source.Get(c))
 }
 
 func (r ActionRef) String() string { return fmt.Sprintf("r%+v", r.Get(core.DefaultContext)) }
 
 func (f CAction) String() string {
 	c := core.DefaultContext
-	return fmt.Sprintf("action(%s, #%d)", f.Source.Get(c), f.Id)
+	return fmt.Sprintf("Action(%s, #%d)", f.Source.Get(c), f.Id)
 }

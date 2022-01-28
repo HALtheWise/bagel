@@ -14,19 +14,15 @@ type FileInfo struct {
 
 	// Is this executable? (may not be necessary)
 	Executable bool
-
-	// What is the ultimate path this will land at relative to the repo root?
-	DestPath string
 }
 
-var T_GeneratedFileInfo = core.Task1("T_GeneratedFileInfo", func(c *core.Context, ref refs.CFileRef) *FileInfo {
+var T_FileInfo = core.Task1("T_FileInfo", func(c *core.Context, ref refs.CFileRef) *FileInfo {
 	file := ref.Get(c)
 
 	if file.Source == refs.FILESYSTEM_SOURCE {
 		return &FileInfo{
 			Generator:  refs.NO_ACTION,
 			Executable: false, // TODO?
-			DestPath:   refs.T_FilepathForLabel(c, file.Location),
 		}
 	}
 
@@ -82,7 +78,7 @@ var T_ActionInfo = core.Task1("T_ActionInfo", func(c *core.Context, ref refs.Act
 
 type analyzedTarget struct {
 	Name, Kind refs.StringRef
-	Providers  []*loading.Provider
+	Providers  []loading.Provider
 	Actions    []*Action
 }
 
@@ -112,11 +108,11 @@ var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label 
 		panic(err)
 	}
 
-	var providers []*loading.Provider
+	var providers []loading.Provider
 
 	if seq, ok := bzlResult.(starlark.Indexable); ok {
 		for i := 0; i < seq.Len(); i++ {
-			providers = append(providers, seq.Index(i).(*loading.Provider))
+			providers = append(providers, *seq.Index(i).(*loading.Provider))
 		}
 	}
 

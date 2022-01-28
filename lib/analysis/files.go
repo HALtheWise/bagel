@@ -27,7 +27,7 @@ func actionDeclareFile(thread *starlark.Thread, fn *starlark.Builtin, args starl
 		Source:   actions.ctx.clabel}
 
 	return &BzlFile{
-		ref:      refs.CFileTable.Insert(c, cfile),
+		Ref:      refs.CFileTable.Insert(c, cfile),
 		producer: nil,
 		ctx:      c,
 	}, nil
@@ -36,13 +36,13 @@ func actionDeclareFile(thread *starlark.Thread, fn *starlark.Builtin, args starl
 var _ starlark.Value = &BzlFile{}
 
 type BzlFile struct {
-	ref      refs.CFileRef
+	Ref      refs.CFileRef
 	producer *Action // TODO(eric): Indirect through a key so we can lazily produce the Action and cache things well
 	ctx      *core.Context
 }
 
 func (f *BzlFile) String() string {
-	val := f.ref.Get(f.ctx).Location.Get(f.ctx)
+	val := f.Ref.Get(f.ctx).Location.Get(f.ctx)
 	return fmt.Sprintf("File(//%s:%s)", val.Pkg.Get(f.ctx), val.Name.Get(f.ctx))
 }
 func (f *BzlFile) Type() string          { return "file" }
