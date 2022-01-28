@@ -9,7 +9,7 @@ import (
 
 type StringRef uint32
 
-var StringInterner core.InternTable[StringRef, string]
+var StringInterner = core.NewInternTable(map[string]StringRef{})
 
 func TestHello(t *testing.T) {
 	executions := 0

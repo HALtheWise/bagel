@@ -9,7 +9,7 @@ import (
 type X1 uint32
 
 func TestInterning(t *testing.T) {
-	var table1 core.InternTable[X1, string]
+	table1 := core.NewInternTable(map[string]X1{})
 
 	c := core.NewContext()
 

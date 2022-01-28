@@ -10,12 +10,12 @@ func ParsePackage(c *core.Context, s string) PackageRef {
 	workspace, relpath, ok := strings.Cut(s, "//")
 	if !ok {
 		panic("Not a package: " + s)
-		return core.INVALID
+		return INVALID_PACKAGE
 	}
 	if len(workspace) > 0 {
 		if !strings.HasPrefix(workspace, "@") {
 			panic("Not a package: " + s)
-			return core.INVALID
+			return INVALID_PACKAGE
 		}
 		workspace = workspace[1:]
 	}
@@ -30,7 +30,7 @@ func ParseLabel(c *core.Context, label string) LabelRef {
 	pkg, name, ok := strings.Cut(label, ":")
 	if !ok {
 		panic("Invalid label: " + label)
-		return core.INVALID
+		return INVALID_LABEL
 	}
 	return LabelTable.Insert(c, Label{
 		ParsePackage(c, pkg),

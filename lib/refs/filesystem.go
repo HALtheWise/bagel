@@ -35,5 +35,5 @@ var T_FindBuildFile = core.Task1("T_FindBuildFile",
 				return LabelTable.Insert(c, Label{pkg, StringTable.Insert(c, buildfile)})
 			}
 		}
-		return core.INVALID
+		return INVALID_LABEL
 	})

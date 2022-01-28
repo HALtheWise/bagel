@@ -60,7 +60,7 @@ func init() {
 var T_LoadTarget = core.Task1("T_LoadTarget", func(c *core.Context, l_r refs.LabelRef) *Target {
 	l := l_r.Get(c)
 	buildfile := refs.T_FindBuildFile(c, l.Pkg)
-	if buildfile == core.INVALID {
+	if buildfile == refs.INVALID_LABEL {
 		return nil
 	}
 

@@ -9,7 +9,11 @@ import (
 // StringRef is used to refer to generic "strings" in various forms
 type StringRef uint32
 
-var StringTable core.InternTable[StringRef, string]
+const (
+	EMPTYSTRING StringRef = iota
+)
+
+var StringTable = core.NewInternTable(map[string]StringRef{"": EMPTYSTRING})
 
 func (r StringRef) Get(c *core.Context) string {
 	return StringTable.Get(c, r)
@@ -17,24 +21,37 @@ func (r StringRef) Get(c *core.Context) string {
 
 type PackageRef uint32
 
+const (
+	INVALID_PACKAGE PackageRef = iota
+)
+
 type Package struct {
 	Workspace StringRef
 	RelPath   StringRef
 }
 
-var PackageTable core.InternTable[PackageRef, Package]
+var PackageTable = core.NewInternTable(map[Package]PackageRef{
+	{1<<32 - 1, EMPTYSTRING}: INVALID_PACKAGE,
+})
 
 func (r PackageRef) Get(c *core.Context) Package {
 	return PackageTable.Get(c, r)
 }
 
 type LabelRef uint32
+
+const (
+	INVALID_LABEL LabelRef = iota
+)
+
 type Label struct {
 	Pkg  PackageRef
 	Name StringRef
 }
 
-var LabelTable core.InternTable[LabelRef, Label]
+var LabelTable = core.NewInternTable(map[Label]LabelRef{
+	{Pkg: 1<<32 - 1}: INVALID_LABEL,
+})
 
 func (r LabelRef) Get(c *core.Context) Label {
 	return LabelTable.Get(c, r)
