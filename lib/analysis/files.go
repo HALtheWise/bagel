@@ -15,9 +15,9 @@ func actionDeclareFile(thread *starlark.Thread, fn *starlark.Builtin, args starl
 		return nil, err
 	}
 
-	actions := fn.Receiver().(*BzlActions)
+	actions := fn.Receiver().(BzlActions)
 	c := actions.ctx.ctx
-	label := refs.Label{Pkg: actions.ctx.label.label.Get(c).Pkg, Name: refs.StringTable.Insert(c, filename)}
+	label := refs.Label{Pkg: actions.ctx.label.Get(c).Pkg, Name: refs.StringTable.Insert(c, filename)}
 
 	return &File{
 		path:     refs.LabelTable.Insert(c, label),

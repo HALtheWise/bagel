@@ -23,9 +23,8 @@ var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label 
 	}
 
 	thread := &starlark.Thread{Name: "Rule evaluation thread: " + label.String(), Load: loading.LoadFunc(c, label_v.Pkg)}
-	bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{
-		&BzlCtx{BzlLabel{label: label, frozen: false, ctx: c}, c}, // ctx
-	}, []starlark.Tuple{})
+	bzlCtx := &BzlCtx{ctx: c, label: label}
+	bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{bzlCtx}, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -38,7 +37,7 @@ var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label 
 		}
 	}
 
-	actions := thread.Local(kActionsKey).([]*Action)
+	actions := bzlCtx.actions
 
 	return &AnalyzedTarget{
 		Kind:      refs.StringTable.Insert(c, unconfigured.Rule.Kind),

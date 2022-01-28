@@ -6,21 +6,23 @@ import (
 	"go.starlark.net/starlark"
 )
 
-const kActionsKey = "__actions__"
+var _ starlark.HasAttrs = BzlActions{}
 
 type BzlActions struct {
 	ctx *BzlCtx
 }
 
-func (a *BzlActions) AttrNames() []string {
+func (a BzlActions) AttrNames() []string {
 	return []string{"write", "declare_file"}
 	// TODO: "args", "declare_directory", "declare_symlink", "do_nothing", "expand_template", "run", "run_shell", "symlink"
 }
 
-func (a *BzlActions) Attr(name string) (starlark.Value, error) {
+func (a BzlActions) Attr(name string) (starlark.Value, error) {
 	switch name {
 	case "write":
-		return starlark.NewBuiltin("write", actionWrite), nil
+		builtin := starlark.NewBuiltin("write", actionWrite)
+		builtin = builtin.BindReceiver(a)
+		return builtin, nil
 	case "declare_file":
 		builtin := starlark.NewBuiltin("declare_file", actionDeclareFile)
 		builtin = builtin.BindReceiver(a)
@@ -29,11 +31,11 @@ func (a *BzlActions) Attr(name string) (starlark.Value, error) {
 	return nil, nil
 }
 
-func (a *BzlActions) String() string        { return "actions for " + a.ctx.label.String() }
-func (a *BzlActions) Type() string          { return "actions" }
-func (a *BzlActions) Freeze()               {}
-func (a *BzlActions) Truth() starlark.Bool  { return starlark.True }
-func (a *BzlActions) Hash() (uint32, error) { panic("not implemented") }
+func (a BzlActions) String() string        { return "actions for " + a.ctx.label.String() }
+func (a BzlActions) Type() string          { return "actions" }
+func (a BzlActions) Freeze()               { a.ctx.Freeze() }
+func (a BzlActions) Truth() starlark.Bool  { return starlark.True }
+func (a BzlActions) Hash() (uint32, error) { panic("not implemented") }
 
 func actionWrite(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var output *File
@@ -42,6 +44,8 @@ func actionWrite(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tu
 		return nil, err
 	}
 
+	actions := fn.Receiver().(BzlActions)
+
 	write := &Action{
 		kind:         WRITE,
 		inputs:       nil,
@@ -49,14 +53,14 @@ func actionWrite(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tu
 		writeContent: content,
 	}
 
-	if err := registerAction(thread, write); err != nil {
+	if err := actions.registerAction(thread, write); err != nil {
 		return nil, err
 	}
 
 	return starlark.None, nil
 }
 
-func registerAction(thread *starlark.Thread, action *Action) error {
+func (a BzlActions) registerAction(thread *starlark.Thread, action *Action) error {
 	for _, output := range action.outputs {
 		if output.producer != nil {
 			return fmt.Errorf("File cannot be output of multiple actions")
@@ -64,8 +68,7 @@ func registerAction(thread *starlark.Thread, action *Action) error {
 		output.producer = action
 	}
 
-	actions, _ := thread.Local(kActionsKey).([]*Action)
-	thread.SetLocal(kActionsKey, append(actions, action))
+	a.ctx.actions = append(a.ctx.actions, action)
 
 	return nil
 }

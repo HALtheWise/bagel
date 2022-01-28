@@ -7,6 +7,8 @@ import (
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
+var _ starlark.HasAttrs = &BzlLabel{}
+
 // https://docs.bazel.build/versions/main/skylark/lib/Label.html
 type BzlLabel struct {
 	ctx    *core.Context
@@ -38,9 +40,13 @@ func (l *BzlLabel) Truth() starlark.Bool  { return true }
 func (l *BzlLabel) Hash() (uint32, error) { return starlark.String(l.String()).Hash() }
 
 // https://docs.bazel.build/versions/main/skylark/lib/ctx.html
+var _ starlark.HasAttrs = &BzlLabel{}
+
 type BzlCtx struct {
-	label BzlLabel
-	ctx   *core.Context
+	ctx            *core.Context
+	label          refs.LabelRef
+	actions        []*Action
+	files_declared []File
 }
 
 func (c *BzlCtx) AttrNames() []string {
@@ -50,7 +56,7 @@ func (c *BzlCtx) AttrNames() []string {
 func (c *BzlCtx) Attr(name string) (starlark.Value, error) {
 	switch name {
 	case "label":
-		return &c.label, nil
+		return &BzlLabel{label: c.label, frozen: false, ctx: c.ctx}, nil
 	case "actions":
 		return &BzlActions{c}, nil
 	}
