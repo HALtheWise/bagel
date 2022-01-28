@@ -6,6 +6,7 @@ import (
 
 	"github.com/HALtheWise/bagel/lib/analysis"
 	"github.com/HALtheWise/bagel/lib/core"
+	"github.com/HALtheWise/bagel/lib/execution"
 	"github.com/HALtheWise/bagel/lib/loading"
 	"github.com/HALtheWise/bagel/lib/refs"
 )
@@ -36,4 +37,10 @@ func main() {
 
 	actionInfo := analysis.T_ActionInfo(c, fileInfo.Generator)
 	fmt.Printf("ActionInfo: %+v\n\n", actionInfo)
+
+	err := execution.T_FileExecute(c, file.Ref)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

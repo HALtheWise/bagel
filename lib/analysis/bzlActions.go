@@ -52,11 +52,11 @@ func actionWrite(thread *starlark.Thread, fn *starlark.Builtin, args starlark.Tu
 	actions := fn.Receiver().(BzlActions)
 
 	write := &Action{
-		kind:          WRITE,
-		inputs:        nil,
-		outputs:       []refs.CFileRef{output.Ref},
-		is_executable: is_executable,
-		writeContent:  content,
+		Kind:         WRITE,
+		Inputs:       nil,
+		Outputs:      []refs.CFileRef{output.Ref},
+		Executable:   is_executable,
+		WriteContent: content,
 	}
 
 	actions.ctx.actions = append(actions.ctx.actions, write)

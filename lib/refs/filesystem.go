@@ -37,3 +37,16 @@ var T_FindBuildFile = core.Task1("T_FindBuildFile",
 		}
 		return INVALID_LABEL
 	})
+
+var T_FilepathForCFile = core.Task1("T_FilepathForCFile", func(c *core.Context, ref CFileRef) string {
+	file := ref.Get(c)
+	if file.Source == FILESYSTEM_SOURCE {
+		return T_FilepathForLabel(c, file.Location)
+	}
+
+	return filepath.Join(
+		"bagel-out",
+		file.Source.Get(c).Config.Get(c),
+		T_FilepathForLabel(c, file.Location),
+	)
+})

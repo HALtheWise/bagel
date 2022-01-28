@@ -32,7 +32,7 @@ var T_FileInfo = core.Task1("T_FileInfo", func(c *core.Context, ref refs.CFileRe
 	var generatingActionIndex int
 
 	for i, action := range targetInfo.Actions {
-		for _, output := range action.outputs {
+		for _, output := range action.Outputs {
 			if output == ref {
 				if generatingAction != nil {
 					panic("Multiple actions produced " + file.String())
@@ -51,7 +51,7 @@ var T_FileInfo = core.Task1("T_FileInfo", func(c *core.Context, ref refs.CFileRe
 			Source: file.Source,
 			Id:     uint32(generatingActionIndex),
 		}),
-		Executable: generatingAction.is_executable,
+		Executable: generatingAction.Executable,
 	}
 })
 
@@ -62,11 +62,11 @@ const (
 )
 
 type Action struct {
-	kind            ActionKind
-	inputs, outputs []refs.CFileRef
+	Kind            ActionKind
+	Inputs, Outputs []refs.CFileRef
 
-	is_executable bool
-	writeContent  string
+	Executable   bool
+	WriteContent string
 }
 
 var T_ActionInfo = core.Task1("T_ActionInfo", func(c *core.Context, ref refs.ActionRef) *Action {

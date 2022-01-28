@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/linux,go,visualstudiocode,bazel
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,go,visualstudiocode,bazel
 
+### Bagel ###
+/bagel-out/
+
 ### Bazel ###
 # gitignore template for Bazel build system
 # website: https://bazel.build/
