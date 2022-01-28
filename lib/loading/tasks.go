@@ -18,10 +18,12 @@ type StarlarkFileResults struct {
 	targets map[string]*Target
 }
 
+var DefaultInfo = NewBuiltinProvider("DefaultInfo")
+
 var predeclared = starlark.StringDict{
 	"rule":        starlark.NewBuiltin("rule", starlarkRuleFunc),
 	"depset":      starlark.NewBuiltin("depset", starlarkDepsetFunc),
-	"DefaultInfo": NewBuiltinProvider("DefaultInfo"),
+	"DefaultInfo": DefaultInfo,
 }
 
 var T_EvalStarlark func(c *core.Context, file refs.LabelRef) StarlarkFileResults

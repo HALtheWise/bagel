@@ -35,7 +35,7 @@ func (p *MetaProvider) CallInternal(thread *starlark.Thread, args starlark.Tuple
 		return nil, fmt.Errorf("%s does not take positional args", p.Name())
 	}
 
-	result := &Provider{kind: p, Data: make(starlark.StringDict)}
+	result := &Provider{Kind: p, Data: make(starlark.StringDict)}
 
 	for _, kwarg := range kwargs {
 		if kwarg.Len() != 2 {
@@ -48,11 +48,11 @@ func (p *MetaProvider) CallInternal(thread *starlark.Thread, args starlark.Tuple
 }
 
 type Provider struct {
-	kind *MetaProvider
+	Kind *MetaProvider
 	Data starlark.StringDict
 }
 
-func (p *Provider) String() string { return fmt.Sprintf("%s%s", p.kind.name, p.Data) }
+func (p *Provider) String() string { return fmt.Sprintf("%s%s", p.Kind.name, p.Data) }
 func (p *Provider) Type() string   { return "depset" }
 func (p *Provider) Freeze() {
 	for _, item := range p.Data {
