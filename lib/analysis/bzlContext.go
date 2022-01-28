@@ -19,13 +19,14 @@ func (l *BzlLabel) AttrNames() []string {
 }
 
 func (l *BzlLabel) Attr(name string) (starlark.Value, error) {
+	c := l.ctx
 	switch name {
 	case "name":
-		return starlark.String(l.label.Get(l.ctx).Name.Get(l.ctx)), nil
+		return starlark.String(l.label.Get(c).Name.Get(c)), nil
 	case "package":
-		return starlark.String(l.label.Get(l.ctx).Pkg.Get(l.ctx)), nil
+		return starlark.String(l.label.Get(c).Pkg.Get(c).RelPath.Get(c)), nil
 	case "workspace_name":
-		return starlark.String("workspaces_not_implemented"), nil
+		return starlark.String(l.label.Get(c).Pkg.Get(c).Workspace.Get(c)), nil
 	}
 	return nil, nil
 }

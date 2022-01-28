@@ -2,7 +2,6 @@ package refs
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/HALtheWise/bagel/lib/core"
 )
@@ -16,9 +15,22 @@ func (r StringRef) Get(c *core.Context) string {
 	return StringTable.Get(c, r)
 }
 
+type PackageRef uint32
+
+type Package struct {
+	Workspace StringRef
+	RelPath   StringRef
+}
+
+var PackageTable core.InternTable[PackageRef, Package]
+
+func (r PackageRef) Get(c *core.Context) Package {
+	return PackageTable.Get(c, r)
+}
+
 type LabelRef uint32
 type Label struct {
-	Pkg  StringRef
+	Pkg  PackageRef
 	Name StringRef
 }
 
@@ -30,40 +42,27 @@ func (r LabelRef) Get(c *core.Context) Label {
 
 func (r StringRef) String() string {
 	c := core.DefaultContext
-	val := StringTable.Get(c, r)
+	val := r.Get(c)
 	return fmt.Sprintf(`r"%s"`, val)
+}
+
+func (r PackageRef) String() string {
+	c := core.DefaultContext
+	val := r.Get(c)
+	return fmt.Sprintf("r%+v", val)
+}
+func (p Package) String() string {
+	c := core.DefaultContext
+	return fmt.Sprintf("@%s//%s", p.Workspace.Get(c), p.RelPath.Get(c))
 }
 
 func (r LabelRef) String() string {
 	c := core.DefaultContext
-	val := LabelTable.Get(c, r)
+	val := r.Get(c)
 	return fmt.Sprintf("r%+v", val)
 }
 
 func (l Label) String() string {
 	c := core.DefaultContext
-	return fmt.Sprintf("//%s:%s", StringTable.Get(c, l.Pkg), StringTable.Get(c, l.Name))
-}
-
-func ParseLabel(c *core.Context, label string) LabelRef {
-	if !strings.HasPrefix(label, "//") {
-		panic("No //: " + label)
-		return core.INVALID
-	}
-	pkg, name, ok := strings.Cut(label[2:], ":")
-	if !ok {
-		panic("no : " + label)
-		return core.INVALID
-	}
-	return LabelTable.Insert(c, Label{
-		StringTable.Insert(c, pkg),
-		StringTable.Insert(c, name),
-	})
-}
-
-func ParseRelativeLabel(c *core.Context, label string, from StringRef) LabelRef {
-	if strings.HasPrefix(label, ":") {
-		return LabelTable.Insert(c, Label{from, StringTable.Insert(c, label[1:])})
-	}
-	return ParseLabel(c, label)
+	return fmt.Sprintf("%s:%s", l.Pkg.Get(c).String(), l.Name.Get(c))
 }

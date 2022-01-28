@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "filesystem.go",
         "labels.go",
+        "parsers.go",
     ],
     importpath = "github.com/HALtheWise/bagel/lib/refs",
     visibility = ["//visibility:public"],

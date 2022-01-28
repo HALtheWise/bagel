@@ -68,7 +68,7 @@ var T_LoadTarget = core.Task1("T_LoadTarget", func(c *core.Context, l_r refs.Lab
 	return parsed.targets[l.Name.Get(c)]
 })
 
-func LoadFunc(c *core.Context, from refs.StringRef) func(*starlark.Thread, string) (starlark.StringDict, error) {
+func LoadFunc(c *core.Context, from refs.PackageRef) func(*starlark.Thread, string) (starlark.StringDict, error) {
 	return func(_ *starlark.Thread, module string) (starlark.StringDict, error) {
 		result := T_EvalStarlark(c, refs.ParseRelativeLabel(c, module, from))
 		return result.globals, nil
