@@ -44,9 +44,10 @@ var _ starlark.HasAttrs = &BzlLabel{}
 
 type BzlCtx struct {
 	ctx            *core.Context
-	label          refs.LabelRef
+	clabel         refs.CLabelRef
+	pkg            refs.PackageRef
 	actions        []*Action
-	files_declared []File
+	files_declared []BzlFile
 }
 
 func (c *BzlCtx) AttrNames() []string {
@@ -56,14 +57,14 @@ func (c *BzlCtx) AttrNames() []string {
 func (c *BzlCtx) Attr(name string) (starlark.Value, error) {
 	switch name {
 	case "label":
-		return &BzlLabel{label: c.label, frozen: false, ctx: c.ctx}, nil
+		return &BzlLabel{label: c.clabel.Get(c.ctx).Label, frozen: false, ctx: c.ctx}, nil
 	case "actions":
 		return &BzlActions{c}, nil
 	}
 	return nil, nil
 }
 
-func (c *BzlCtx) String() string        { return "ctx for " + c.label.String() }
+func (c *BzlCtx) String() string        { return "ctx for " + c.clabel.String() }
 func (c *BzlCtx) Type() string          { return "ctx" }
 func (c *BzlCtx) Freeze()               { panic("Cannot freeze BzlCtx") }
 func (c *BzlCtx) Truth() starlark.Bool  { return starlark.True }

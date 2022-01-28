@@ -8,22 +8,105 @@ import (
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
-type AnalyzedTarget struct {
+type FileInfo struct {
+	// Which action generated this file, or NO_ACTION
+	Generator refs.ActionRef
+
+	// Is this executable? (may not be necessary)
+	Executable bool
+
+	// What is the ultimate path this will land at relative to the repo root?
+	DestPath string
+}
+
+var T_GeneratedFileInfo = core.Task1("T_GeneratedFileInfo", func(c *core.Context, ref refs.CFileRef) *FileInfo {
+	file := ref.Get(c)
+
+	if file.Source == refs.FILESYSTEM_SOURCE {
+		return &FileInfo{
+			Generator:  refs.NO_ACTION,
+			Executable: false, // TODO?
+			DestPath:   refs.T_FilepathForLabel(c, file.Location),
+		}
+	}
+
+	targetInfo := T_AnalyzeTarget(c, file.Source)
+
+	var generatingAction *Action
+	var generatingActionIndex int
+
+	for i, action := range targetInfo.Actions {
+		for _, output := range action.outputs {
+			if output == ref {
+				if generatingAction != nil {
+					panic("Multiple actions produced " + file.String())
+				}
+				generatingAction = targetInfo.Actions[i]
+				generatingActionIndex = i
+			}
+		}
+	}
+	if generatingAction == nil {
+		panic("No action produced " + file.String())
+	}
+
+	return &FileInfo{
+		Generator: refs.CActionTable.Insert(c, refs.CAction{
+			Source: file.Source,
+			Id:     uint32(generatingActionIndex),
+		}),
+		Executable: generatingAction.is_executable,
+	}
+})
+
+type ActionKind int8
+
+const (
+	WRITE ActionKind = iota
+)
+
+type Action struct {
+	kind            ActionKind
+	inputs, outputs []refs.CFileRef
+
+	is_executable bool
+	writeContent  string
+}
+
+var T_ActionInfo = core.Task1("T_ActionInfo", func(c *core.Context, ref refs.ActionRef) *Action {
+	action := ref.Get(c)
+
+	targetInfo := T_AnalyzeTarget(c, action.Source)
+	return targetInfo.Actions[action.Id]
+})
+
+type analyzedTarget struct {
 	Name, Kind refs.StringRef
 	Providers  []*loading.Provider
 	Actions    []*Action
 }
 
-var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label refs.LabelRef) *AnalyzedTarget {
-	label_v := label.Get(c)
+var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label refs.CLabelRef) *analyzedTarget {
+	clabel_v := label.Get(c)
+	label_v := clabel_v.Label.Get(c)
 
-	unconfigured := loading.T_LoadTarget(c, label)
+	if clabel_v.Config != refs.TARGET_CONFIG {
+		panic("We only support target config right now... Sorry...")
+	}
+
+	unconfigured := loading.T_LoadTarget(c, clabel_v.Label)
 	if unconfigured == nil {
 		return nil
 	}
 
-	thread := &starlark.Thread{Name: "Rule evaluation thread: " + label.String(), Load: loading.LoadFunc(c, label_v.Pkg)}
-	bzlCtx := &BzlCtx{ctx: c, label: label}
+	thread := &starlark.Thread{
+		Name: "Rule evaluation thread: " + label.String(),
+		Load: loading.LoadFunc(c, label_v.Pkg)}
+
+	bzlCtx := &BzlCtx{ctx: c,
+		clabel: label,
+		pkg:    label_v.Pkg}
+
 	bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{bzlCtx}, nil)
 	if err != nil {
 		panic(err)
@@ -39,7 +122,7 @@ var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label 
 
 	actions := bzlCtx.actions
 
-	return &AnalyzedTarget{
+	return &analyzedTarget{
 		Kind:      refs.StringTable.Insert(c, unconfigured.Rule.Kind),
 		Name:      label_v.Name,
 		Providers: providers,

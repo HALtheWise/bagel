@@ -11,13 +11,15 @@ type StringRef uint32
 
 const (
 	EMPTYSTRING StringRef = iota
+	INVALIDSTRING
 )
 
-var StringTable = core.NewInternTable(map[string]StringRef{"": EMPTYSTRING})
+var StringTable = core.NewInternTable(map[string]StringRef{
+	"":                      EMPTYSTRING,
+	"__invalid\x00string__": INVALIDSTRING,
+})
 
-func (r StringRef) Get(c *core.Context) string {
-	return StringTable.Get(c, r)
-}
+func (r StringRef) Get(c *core.Context) string { return StringTable.Get(c, r) }
 
 type PackageRef uint32
 
@@ -31,12 +33,10 @@ type Package struct {
 }
 
 var PackageTable = core.NewInternTable(map[Package]PackageRef{
-	{1<<32 - 1, EMPTYSTRING}: INVALID_PACKAGE,
+	{INVALIDSTRING, INVALIDSTRING}: INVALID_PACKAGE,
 })
 
-func (r PackageRef) Get(c *core.Context) Package {
-	return PackageTable.Get(c, r)
-}
+func (r PackageRef) Get(c *core.Context) Package { return PackageTable.Get(c, r) }
 
 type LabelRef uint32
 
@@ -50,18 +50,14 @@ type Label struct {
 }
 
 var LabelTable = core.NewInternTable(map[Label]LabelRef{
-	{Pkg: 1<<32 - 1}: INVALID_LABEL,
+	{INVALID_PACKAGE, INVALIDSTRING}: INVALID_LABEL,
 })
 
-func (r LabelRef) Get(c *core.Context) Label {
-	return LabelTable.Get(c, r)
-}
+func (r LabelRef) Get(c *core.Context) Label { return LabelTable.Get(c, r) }
 
-func (r StringRef) String() string {
-	c := core.DefaultContext
-	val := r.Get(c)
-	return fmt.Sprintf(`r"%s"`, val)
-}
+// String functions
+
+func (r StringRef) String() string { return fmt.Sprintf(`r"%s"`, r.Get(core.DefaultContext)) }
 
 func (r PackageRef) String() string {
 	c := core.DefaultContext
@@ -73,11 +69,7 @@ func (p Package) String() string {
 	return fmt.Sprintf("@%s//%s", p.Workspace.Get(c), p.RelPath.Get(c))
 }
 
-func (r LabelRef) String() string {
-	c := core.DefaultContext
-	val := r.Get(c)
-	return fmt.Sprintf("r%+v", val)
-}
+func (r LabelRef) String() string { return fmt.Sprintf("r%+v", r.Get(core.DefaultContext)) }
 
 func (l Label) String() string {
 	c := core.DefaultContext

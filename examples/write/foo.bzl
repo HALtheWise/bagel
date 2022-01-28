@@ -4,6 +4,7 @@ def _foo_binary_impl(ctx):
     ctx.actions.write(
         output = out,
         content = "Hello!\n",
+        # is_executable = False,
     )
     return [DefaultInfo(files = depset([out]))]
 

@@ -24,6 +24,8 @@ func main() {
 	loaded := loading.T_LoadTarget(c, label)
 	fmt.Printf("%+v  (%v)\n", loaded, loaded.Rule.Impl)
 
-	analyzed := analysis.T_AnalyzeTarget(c, label)
+	clabel := refs.CLabelTable.Insert(c, refs.CLabel{Label: label, Config: refs.TARGET_CONFIG})
+
+	analyzed := analysis.T_AnalyzeTarget(c, clabel)
 	fmt.Printf("%+v", analyzed)
 }
