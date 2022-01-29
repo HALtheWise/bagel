@@ -73,3 +73,14 @@ func (c *BzlCtx) Type() string          { return "ctx" }
 func (c *BzlCtx) Freeze()               { panic("Cannot freeze BzlCtx") }
 func (c *BzlCtx) Truth() starlark.Bool  { return starlark.True }
 func (c *BzlCtx) Hash() (uint32, error) { panic("not implemented") }
+
+func getAttrs(infos []loading.AttrInfo, values []loading.AttrValue) map[string]loading.AttrValue {
+	if len(infos) != len(values) {
+		panic("Attr length mismatch")
+	}
+	result := make(map[string]loading.AttrValue, len(infos))
+	for i, info := range infos {
+		result[info.Name] = values[i]
+	}
+	return result
+}
