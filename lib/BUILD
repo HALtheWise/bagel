@@ -6,10 +6,8 @@ go_library(
     importpath = "github.com/HALtheWise/bagel/lib",
     visibility = ["//visibility:private"],
     deps = [
-        "//lib/analysis",
         "//lib/core",
         "//lib/execution",
-        "//lib/loading",
         "//lib/refs",
     ],
 )

@@ -12,15 +12,11 @@ const kTargetsKey = "__targets__"
 
 var _ starlark.Callable = &BzlRule{}
 
-type Attr struct {
-	kind string
-}
-
 type BzlRule struct {
 	DefinedIn refs.LabelRef
 	Kind      string
 	Impl      starlark.Callable
-	Attrs     map[string]Attr
+	Attrs     []Attr
 }
 
 func (r *BzlRule) String() string {
@@ -41,6 +37,41 @@ func (r *BzlRule) Freeze() {
 	}
 }
 
+// Invoked when you call rule(impl=...) in Starlark
+func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+	var impl starlark.Callable
+	var attrs *starlark.Dict
+	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "implementation", &impl, "attrs?", &attrs); err != nil {
+		return nil, err
+	}
+
+	rule := &BzlRule{
+		DefinedIn: thread.Local("label").(refs.LabelRef),
+		Kind:      "",
+		Impl:      impl,
+		Attrs:     nil,
+	}
+
+	// parse attrs={...}
+	for _, k := range attrs.Keys() {
+		key := k.(starlark.String)
+		v, ok, err := attrs.Get(key)
+		if !ok || err != nil {
+			return nil, fmt.Errorf("Unable to get %v: %w", key, err)
+		}
+		switch val := v.(type) {
+		case *Attr:
+			copy := *val
+			copy.Name = string(key)
+			rule.Attrs = append(rule.Attrs, copy)
+		default:
+			return nil, fmt.Errorf("Unknown attr %s (%T)", v, v)
+		}
+	}
+
+	return rule, nil
+}
+
 func (r *BzlRule) Name() string {
 	if r.Kind != "" {
 		return r.Kind
@@ -52,11 +83,22 @@ func (r *BzlRule) Name() string {
 func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var name string
 
-	if err := starlark.UnpackArgs(r.Name(), args, kwargs, "name", &name); err != nil {
+	parseArgs := []any{"name", &name}
+	attrs := make([]starlark.Value, len(r.Attrs))
+	for i, attr := range r.Attrs {
+		if attr.Mandatory {
+			parseArgs = append(parseArgs, attr.Name)
+		} else {
+			parseArgs = append(parseArgs, attr.Name+"?")
+		}
+		parseArgs = append(parseArgs, &attrs[i])
+	}
+
+	if err := starlark.UnpackArgs(r.Name(), args, kwargs, parseArgs...); err != nil {
 		return nil, err
 	}
 
-	rules := thread.Local(kTargetsKey).(map[string]*Target)
-	rules[name] = &Target{r, args, kwargs}
+	targets := thread.Local(kTargetsKey).(map[string]*Target)
+	targets[name] = &Target{r, attrs}
 	return starlark.None, nil
 }

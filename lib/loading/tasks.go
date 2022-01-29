@@ -8,9 +8,8 @@ import (
 )
 
 type Target struct {
-	Rule   *BzlRule
-	Args   starlark.Tuple
-	Kwargs []starlark.Tuple
+	Rule       *BzlRule
+	AttrValues []starlark.Value
 }
 
 type StarlarkFileResults struct {
@@ -23,6 +22,7 @@ var DefaultInfo = NewBuiltinProvider("DefaultInfo")
 var predeclared = starlark.StringDict{
 	"rule":        starlark.NewBuiltin("rule", starlarkRuleFunc),
 	"depset":      starlark.NewBuiltin("depset", starlarkDepsetFunc),
+	"attr":        BzlAttrs,
 	"DefaultInfo": DefaultInfo,
 }
 
@@ -75,19 +75,4 @@ func LoadFunc(c *core.Context, from refs.PackageRef) func(*starlark.Thread, stri
 		result := T_EvalStarlark(c, refs.ParseRelativeLabel(c, module, from))
 		return result.globals, nil
 	}
-}
-
-func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-	var impl starlark.Callable
-	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "implementation", &impl); err != nil {
-		return nil, err
-	}
-
-	rule := &BzlRule{
-		DefinedIn: thread.Local("label").(refs.LabelRef),
-		Kind:      "",
-		Impl:      impl,
-		Attrs:     nil,
-	}
-	return rule, nil
 }
