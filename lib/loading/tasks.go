@@ -10,8 +10,8 @@ import (
 // Targets are the primary output of the Loading stage into the Analysis stage.
 // Eventually we should figure out how to make these serializable.
 type Target struct {
-	Rule       *BzlRule
-	AttrValues []AttrValue
+	Rule  *BzlRule
+	Attrs map[string]AttrValue
 }
 
 type StarlarkFileResults struct {

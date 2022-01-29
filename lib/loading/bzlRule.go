@@ -99,13 +99,13 @@ func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwa
 	}
 
 	// TODO: helper function for readability
-	attrValues := make([]AttrValue, len(r.Attrs))
+	attrValues := make(map[string]AttrValue, len(r.Attrs))
 	for i, attr := range r.Attrs {
 		switch attr.Kind {
 		case STRING_ATTR:
 			str := bzlAttrs[i].(starlark.String)
 
-			attrValues[i] = AttrValue{Kind: STRING_ATTR, StringValue: string(str)}
+			attrValues[attr.Name] = AttrValue{Kind: STRING_ATTR, StringValue: string(str)}
 		default:
 			panic("Unhandled attr.Kind")
 		}
