@@ -16,7 +16,7 @@ type BzlRule struct {
 	DefinedIn refs.LabelRef
 	Kind      string
 	Impl      starlark.Callable
-	Attrs     []Attr
+	Attrs     []AttrInfo
 }
 
 func (r *BzlRule) String() string {
@@ -60,7 +60,7 @@ func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlar
 			return nil, fmt.Errorf("Unable to get %v: %w", key, err)
 		}
 		switch val := v.(type) {
-		case *Attr:
+		case *AttrInfo:
 			copy := *val
 			copy.Name = string(key)
 			rule.Attrs = append(rule.Attrs, copy)
@@ -84,21 +84,34 @@ func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwa
 	var name string
 
 	parseArgs := []any{"name", &name}
-	attrs := make([]starlark.Value, len(r.Attrs))
+	bzlAttrs := make([]starlark.Value, len(r.Attrs))
 	for i, attr := range r.Attrs {
 		if attr.Mandatory {
 			parseArgs = append(parseArgs, attr.Name)
 		} else {
 			parseArgs = append(parseArgs, attr.Name+"?")
 		}
-		parseArgs = append(parseArgs, &attrs[i])
+		parseArgs = append(parseArgs, &bzlAttrs[i])
 	}
 
 	if err := starlark.UnpackArgs(r.Name(), args, kwargs, parseArgs...); err != nil {
 		return nil, err
 	}
 
+	// TODO: helper function for readability
+	attrValues := make([]AttrValue, len(r.Attrs))
+	for i, attr := range r.Attrs {
+		switch attr.Kind {
+		case STRING_ATTR:
+			str := bzlAttrs[i].(starlark.String)
+
+			attrValues[i] = AttrValue{Kind: STRING_ATTR, StringValue: string(str)}
+		default:
+			panic("Unhandled attr.Kind")
+		}
+	}
+
 	targets := thread.Local(kTargetsKey).(map[string]*Target)
-	targets[name] = &Target{r, attrs}
+	targets[name] = &Target{r, attrValues}
 	return starlark.None, nil
 }

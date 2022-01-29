@@ -101,7 +101,9 @@ var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label 
 
 	bzlCtx := &BzlCtx{ctx: c,
 		clabel: label,
-		pkg:    label_v.Pkg}
+		pkg:    label_v.Pkg,
+		attrs:  getAttrs(unconfigured.Rule.Attrs, unconfigured.AttrValues),
+	}
 
 	bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{bzlCtx}, nil)
 	if err != nil {

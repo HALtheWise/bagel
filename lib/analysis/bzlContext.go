@@ -4,6 +4,7 @@ import (
 	"go.starlark.net/starlark"
 
 	"github.com/HALtheWise/bagel/lib/core"
+	"github.com/HALtheWise/bagel/lib/loading"
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
@@ -48,10 +49,11 @@ type BzlCtx struct {
 	pkg            refs.PackageRef
 	actions        []*Action
 	files_declared []BzlFile
+	attrs          map[string]loading.AttrValue
 }
 
 func (c *BzlCtx) AttrNames() []string {
-	return []string{"label", "actions"} // TODO: lots
+	return []string{"label", "actions", "attr"} // TODO: lots
 }
 
 func (c *BzlCtx) Attr(name string) (starlark.Value, error) {
@@ -60,6 +62,8 @@ func (c *BzlCtx) Attr(name string) (starlark.Value, error) {
 		return &BzlLabel{label: c.clabel.Get(c.ctx).Label, frozen: false, ctx: c.ctx}, nil
 	case "actions":
 		return &BzlActions{c}, nil
+	case "attr":
+		return &BzlAttr{c}, nil
 	}
 	return nil, nil
 }
@@ -69,3 +73,14 @@ func (c *BzlCtx) Type() string          { return "ctx" }
 func (c *BzlCtx) Freeze()               { panic("Cannot freeze BzlCtx") }
 func (c *BzlCtx) Truth() starlark.Bool  { return starlark.True }
 func (c *BzlCtx) Hash() (uint32, error) { panic("not implemented") }
+
+func getAttrs(infos []loading.AttrInfo, values []loading.AttrValue) map[string]loading.AttrValue {
+	if len(infos) != len(values) {
+		panic("Attr length mismatch")
+	}
+	result := make(map[string]loading.AttrValue, len(infos))
+	for i, info := range infos {
+		result[info.Name] = values[i]
+	}
+	return result
+}
