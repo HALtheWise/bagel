@@ -1,0 +1,12 @@
+load(":foo.bzl", "hello_world")
+
+hello_world(
+    name = "hello",
+    template = "file.cc.tpl",
+    username = "Alice",
+)
+
+# cc_binary(
+#     name = "hello_bin",
+#     srcs = [":hello"],
+# )
