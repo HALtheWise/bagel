@@ -15,6 +15,9 @@ func ParsePackage(c *core.Context, s string, from PackageRef) PackageRef {
 	}
 	var workspaceRef StringRef
 	if len(workspace) == 0 {
+		if from == INVALID_PACKAGE {
+			panic(fmt.Sprintf("Relative label %s in invalid context", s))
+		}
 		workspaceRef = from.Get(c).Workspace
 	} else {
 		if !strings.HasPrefix(workspace, "@") {
