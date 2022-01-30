@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	"go.starlark.net/starlark"
+
+	"github.com/HALtheWise/bagel/lib/refs"
 )
 
 type AttrKind int
@@ -47,7 +49,8 @@ type AttrValue struct {
 	Kind AttrKind
 
 	// Kind-specific
-	StringValue string
+	StringValue string // TODO: StringRef?
+	LabelValue  refs.LabelRef
 }
 
 // https://docs.bazel.build/versions/main/skylark/lib/attr.html

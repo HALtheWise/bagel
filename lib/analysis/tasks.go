@@ -59,14 +59,16 @@ type ActionKind int8
 
 const (
 	WRITE ActionKind = iota
+	EXPAND_TEMPLATE
 )
 
 type Action struct {
 	Kind            ActionKind
 	Inputs, Outputs []refs.CFileRef
 
-	Executable   bool
-	WriteContent string
+	Executable                  bool
+	WriteContent                string
+	ExpandTemplateSubstitutions map[string]string
 }
 
 var T_ActionInfo = core.Task1("T_ActionInfo", func(c *core.Context, ref refs.ActionRef) *Action {
@@ -82,48 +84,52 @@ type analyzedTarget struct {
 	Actions    []*Action
 }
 
-var T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label refs.CLabelRef) *analyzedTarget {
-	clabel_v := label.Get(c)
-	label_v := clabel_v.Label.Get(c)
+var T_AnalyzeTarget func(*core.Context, refs.CLabelRef) *analyzedTarget
 
-	if clabel_v.Config != refs.TARGET_CONFIG {
-		panic("We only support target config right now... Sorry...")
-	}
+func init() {
+	T_AnalyzeTarget = core.Task1("T_AnalyzeTarget", func(c *core.Context, label refs.CLabelRef) *analyzedTarget {
+		clabel_v := label.Get(c)
+		label_v := clabel_v.Label.Get(c)
 
-	unconfigured := loading.T_LoadTarget(c, clabel_v.Label)
-	if unconfigured == nil {
-		return nil
-	}
-
-	thread := &starlark.Thread{
-		Name: "Rule evaluation thread: " + label.String(),
-		Load: loading.LoadFunc(c, label_v.Pkg)}
-
-	bzlCtx := &BzlCtx{ctx: c,
-		clabel: label,
-		pkg:    label_v.Pkg,
-		attrs:  getAttrs(unconfigured.Rule.Attrs, unconfigured.AttrValues),
-	}
-
-	bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{bzlCtx}, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	var providers []loading.Provider
-
-	if seq, ok := bzlResult.(starlark.Indexable); ok {
-		for i := 0; i < seq.Len(); i++ {
-			providers = append(providers, *seq.Index(i).(*loading.Provider))
+		if clabel_v.Config != refs.TARGET_CONFIG {
+			panic("We only support target config right now... Sorry...")
 		}
-	}
 
-	actions := bzlCtx.actions
+		unconfigured := loading.T_LoadTarget(c, clabel_v.Label)
+		if unconfigured == nil {
+			return nil
+		}
 
-	return &analyzedTarget{
-		Kind:      refs.StringTable.Insert(c, unconfigured.Rule.Kind),
-		Name:      label_v.Name,
-		Providers: providers,
-		Actions:   actions,
-	}
-})
+		thread := &starlark.Thread{
+			Name: "Rule evaluation thread: " + label.String(),
+			Load: loading.LoadFunc(c, label_v.Pkg)}
+
+		bzlCtx := &BzlCtx{ctx: c,
+			clabel: label,
+			pkg:    label_v.Pkg,
+			attrs:  getAttrs(c, unconfigured.Rule.Attrs, unconfigured.AttrValues),
+		}
+
+		bzlResult, err := starlark.Call(thread, unconfigured.Rule.Impl, starlark.Tuple{bzlCtx}, nil)
+		if err != nil {
+			panic(err)
+		}
+
+		var providers []loading.Provider
+
+		if seq, ok := bzlResult.(starlark.Indexable); ok {
+			for i := 0; i < seq.Len(); i++ {
+				providers = append(providers, *seq.Index(i).(*loading.Provider))
+			}
+		}
+
+		actions := bzlCtx.actions
+
+		return &analyzedTarget{
+			Kind:      refs.StringTable.Insert(c, unconfigured.Rule.Kind),
+			Name:      label_v.Name,
+			Providers: providers,
+			Actions:   actions,
+		}
+	})
+}

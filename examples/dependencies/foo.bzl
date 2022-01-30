@@ -3,7 +3,7 @@ def _hello_world_impl(ctx):
     ctx.actions.expand_template(
         output = out,
         template = ctx.file.template,
-        substitutions = {"{NAME}": ctx.attr.username},
+        substitutions = {"NAME": ctx.attr.username},
     )
     return [DefaultInfo(files = depset([out]))]
 

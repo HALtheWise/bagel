@@ -33,12 +33,14 @@ var T_EvalStarlark func(c *core.Context, file refs.LabelRef) StarlarkFileResults
 func init() {
 	T_EvalStarlark = core.Task1("T_EvalStarlark",
 		func(c *core.Context, file refs.LabelRef) StarlarkFileResults {
-			label := refs.LabelTable.Get(c, file)
+			label := file.Get(c)
 			thread := &starlark.Thread{Name: "single file thread: " + file.String(), Load: LoadFunc(c, label.Pkg)}
 
 			targets := map[string]*Target{}
-			thread.SetLocal(kTargetsKey, targets)
-			thread.SetLocal("label", file)
+			thread.SetLocal(kLocalTargets, targets)
+			thread.SetLocal(kLocalFile, file)
+			thread.SetLocal(kLocalPacakge, label.Pkg)
+			thread.SetLocal(kLocalContext, c)
 
 			globals, err := starlark.ExecFile(thread, refs.T_FilepathForLabel(c, file), nil, predeclared)
 			if err != nil {
@@ -74,7 +76,7 @@ var T_LoadTarget = core.Task1("T_LoadTarget", func(c *core.Context, l_r refs.Lab
 
 func LoadFunc(c *core.Context, from refs.PackageRef) func(*starlark.Thread, string) (starlark.StringDict, error) {
 	return func(_ *starlark.Thread, module string) (starlark.StringDict, error) {
-		result := T_EvalStarlark(c, refs.ParseRelativeLabel(c, module, from))
+		result := T_EvalStarlark(c, refs.ParseLabel(c, module, from))
 		return result.globals, nil
 	}
 }

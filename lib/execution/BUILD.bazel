@@ -8,7 +8,6 @@ go_library(
     deps = [
         "//lib/analysis",
         "//lib/core",
-        "//lib/loading",
         "//lib/refs",
     ],
 )

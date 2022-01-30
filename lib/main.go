@@ -16,7 +16,7 @@ func main() {
 
 	c := core.NewContext()
 
-	label := refs.ParseLabel(c, os.Args[1])
+	label := refs.ParseLabel(c, os.Args[1], refs.INVALID_PACKAGE)
 
 	fmt.Println(label)
 

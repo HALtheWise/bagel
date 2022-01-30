@@ -5,10 +5,14 @@ import (
 
 	"go.starlark.net/starlark"
 
+	"github.com/HALtheWise/bagel/lib/core"
 	"github.com/HALtheWise/bagel/lib/refs"
 )
 
-const kTargetsKey = "__targets__"
+const kLocalTargets = "__targets__"
+const kLocalFile = "__file__"
+const kLocalPacakge = "__package__"
+const kLocalContext = "__context__"
 
 var _ starlark.Callable = &BzlRule{}
 
@@ -46,7 +50,7 @@ func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlar
 	}
 
 	rule := &BzlRule{
-		DefinedIn: thread.Local("label").(refs.LabelRef),
+		DefinedIn: thread.Local(kLocalFile).(refs.LabelRef),
 		Kind:      "",
 		Impl:      impl,
 		Attrs:     nil,
@@ -102,16 +106,23 @@ func (r *BzlRule) CallInternal(thread *starlark.Thread, args starlark.Tuple, kwa
 	attrValues := make([]AttrValue, len(r.Attrs))
 	for i, attr := range r.Attrs {
 		switch attr.Kind {
-		case STRING_ATTR, LABEL_ATTR:
+		case STRING_ATTR:
 			str := bzlAttrs[i].(starlark.String)
 
 			attrValues[i] = AttrValue{Kind: attr.Kind, StringValue: string(str)}
+		case LABEL_ATTR:
+			c := thread.Local(kLocalContext).(*core.Context)
+
+			str := string(bzlAttrs[i].(starlark.String))
+			label := refs.ParseLabel(c, str, thread.Local(kLocalPacakge).(refs.PackageRef))
+
+			attrValues[i] = AttrValue{Kind: attr.Kind, LabelValue: label}
 		default:
 			panic("Unhandled attr.Kind")
 		}
 	}
 
-	targets := thread.Local(kTargetsKey).(map[string]*Target)
+	targets := thread.Local(kLocalTargets).(map[string]*Target)
 	targets[name] = &Target{r, attrValues}
 	return starlark.None, nil
 }

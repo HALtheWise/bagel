@@ -6,6 +6,11 @@ hello_world(
     username = "Alice",
 )
 
+hello_world(
+    name = "hello2",
+    template = "//examples/attributes:bin",
+    username = "Bob",
+)
 # cc_binary(
 #     name = "hello_bin",
 #     srcs = [":hello"],

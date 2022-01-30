@@ -7,6 +7,7 @@ go_library(
         "bzlAttr.go",
         "bzlContext.go",
         "files.go",
+        "helpers.go",
         "tasks.go",
     ],
     importpath = "github.com/HALtheWise/bagel/lib/analysis",

@@ -2,7 +2,7 @@ def _foo_binary_impl(ctx):
     out = ctx.actions.declare_file(ctx.label.name)
     ctx.actions.write(
         output = out,
-        content = "Hello {}!\n".format(ctx.attr.username),
+        content = "Hello {}!\nNAME\n".format(ctx.attr.username),
     )
     return [DefaultInfo(files = depset([out]))]
 
