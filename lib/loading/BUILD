@@ -15,6 +15,6 @@ go_library(
     deps = [
         "//lib/core",
         "//lib/refs",
-        "@net_starlark_go//starlark:go_default_library",
+        "@net_starlark_go//starlark",
     ],
 )

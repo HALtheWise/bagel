@@ -1,6 +1,18 @@
-load("@rules_go//go:def.bzl", "go_test")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_test(
     name = "storage_test",
     srcs = ["shmem_test.go"],
+    embed = [":storage"],
+)
+
+go_library(
+    name = "storage",
+    srcs = [
+        "mmap.go",
+        "shmem.go",
+        "typed_mmap.go",
+    ],
+    importpath = "github.com/HALtheWise/bagel/lib/storage",
+    visibility = ["//visibility:public"],
 )

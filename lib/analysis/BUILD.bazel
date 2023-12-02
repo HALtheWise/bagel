@@ -16,6 +16,6 @@ go_library(
         "//lib/core",
         "//lib/loading",
         "//lib/refs",
-        "@net_starlark_go//starlark:go_default_library",
+        "@net_starlark_go//starlark",
     ],
 )
