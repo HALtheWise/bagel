@@ -1,4 +1,4 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "loading",
@@ -15,6 +15,6 @@ go_library(
     deps = [
         "//lib/core",
         "//lib/refs",
-        "@net_starlark_go//starlark",
+        "@net_starlark_go//starlark:go_default_library",
     ],
 )

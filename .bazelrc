@@ -1,2 +1,5 @@
 build --experimental_convenience_symlinks=ignore
 test --test_output=errors
+
+# Enable Bzlmod for every Bazel command
+common --enable_bzlmod
