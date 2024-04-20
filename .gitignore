@@ -69,3 +69,6 @@
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,go,visualstudiocode,bazel
+
+# Used for some other stuff
+build/
