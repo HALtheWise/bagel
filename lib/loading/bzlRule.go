@@ -57,19 +57,21 @@ func starlarkRuleFunc(thread *starlark.Thread, b *starlark.Builtin, args starlar
 	}
 
 	// parse attrs={...}
-	for _, k := range attrs.Keys() {
-		key := k.(starlark.String)
-		v, ok, err := attrs.Get(key)
-		if !ok || err != nil {
-			return nil, fmt.Errorf("Unable to get %v: %w", key, err)
-		}
-		switch val := v.(type) {
-		case *AttrInfo:
-			copy := *val
-			copy.Name = string(key)
-			rule.Attrs = append(rule.Attrs, copy)
-		default:
-			return nil, fmt.Errorf("Unknown attr %s (%T)", v, v)
+	if attrs != nil {
+		for _, k := range attrs.Keys() {
+			key := k.(starlark.String)
+			v, ok, err := attrs.Get(key)
+			if !ok || err != nil {
+				return nil, fmt.Errorf("Unable to get %v: %w", key, err)
+			}
+			switch val := v.(type) {
+			case *AttrInfo:
+				copy := *val
+				copy.Name = string(key)
+				rule.Attrs = append(rule.Attrs, copy)
+			default:
+				return nil, fmt.Errorf("Unknown attr %s (%T)", v, v)
+			}
 		}
 	}
 

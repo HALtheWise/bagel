@@ -24,7 +24,10 @@ func GetDefaultFiles(providers []loading.Provider) ([]refs.CFileRef, error) {
 		return nil, errors.New("No DefaultInfo provider")
 	}
 
-	files := defaultInfo.Data["files"].(*loading.Depset)
+	files, ok := defaultInfo.Data["files"].(*loading.Depset)
+	if !ok {
+		return nil, errors.New("DefaultInfo.files is not a depset")
+	}
 
 	var result []refs.CFileRef
 	for _, value := range files.Items {

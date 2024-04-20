@@ -16,9 +16,13 @@ func main() {
 
 	c := core.NewContext()
 
-	label := refs.ParseLabel(c, os.Args[1], refs.INVALID_PACKAGE)
+	from := refs.PackageTable.Insert(c, refs.Package{
+		Workspace: refs.EMPTYSTRING,
+		RelPath:   refs.EMPTYSTRING,
+	})
+	label := refs.ParseLabel(c, os.Args[1], from)
 
-	fmt.Println(label)
+	fmt.Println("Building DefaultInfo for:", label)
 
 	err := execution.T_BuildDefaultInfo(c, label)
 	if err != nil {

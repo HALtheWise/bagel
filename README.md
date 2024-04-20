@@ -54,6 +54,10 @@ begin
 end
 ```
 
+```
+bazel run //lib -- //examples/dependencies:hello2
+```
+
 ### Reading
 
 - https://paper.dropbox.com/doc/Salsa-In-More-Depth-2019.01-wYaiL8t72BdGGPFrnmt7h and https://www.youtube.com/watch?v=i_IhACacPRY
